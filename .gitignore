@@ -1,0 +1,13 @@
+node_modules
+.next
+.env
+.env.local
+.vercel
+trigger/.trigger
+*.log
+.DS_Store
+
+*.tsbuildinfo
+
+# Local agent tooling state
+.commandcode/
