@@ -6,6 +6,7 @@ import type {
   ConvertDriver,
   DashboardMetric,
   Opportunity,
+  ReadyPost,
   RenderItem,
   WeekPlanItem,
 } from "@/lib/types";
@@ -140,4 +141,37 @@ export const renderQueue: RenderItem[] = [
   { id: "render-1", title: "Muscle-Up Transition", detail: "REEL · v1 · cut + subtitles + branded titles", status: "RENDERING" },
   { id: "render-2", title: "5 Pull-Up Mistakes", detail: "CAROUSEL · v1 · 8-slide carousel", status: "PENDING" },
   { id: "render-3", title: "Max Hang Challenge", detail: "REEL · v2 · member PR cut", status: "READY" },
+];
+
+export const readyPosts: ReadyPost[] = [
+  {
+    id: "pub-1",
+    title: "Muscle-Up Transition",
+    platform: "Instagram Reel + TikTok",
+    scheduled: "Mon 19:00",
+    hook: "Your pull isn't the problem.",
+    script: "Beat 1 · Bar stays close to the chest.\nBeat 2 · Show the rep that fails at the transition.\nBeat 3 · Drill the turnover at the bar.\nBeat 4 · One clean rep, no cuts.",
+    caption: "Most failed muscle-ups lose the rep at the transition. Keep the bar close, stay aggressive, and drill the turnover. احفظ الفيديو وجربه في التمرين الجاي.",
+    cta: "Book a free assessment",
+  },
+  {
+    id: "pub-2",
+    title: "5 Pull-Up Mistakes",
+    platform: "Instagram Carousel",
+    scheduled: "Wed 18:00",
+    hook: "5 mistakes killing your pull-up.",
+    script: "Slide 1 · Title.\nSlides 2–6 · One mistake each, with the fix underneath.\nSlide 7 · Save this for your next pull session.\nSlide 8 · How to start.",
+    caption: "Fix the basics before chasing more reps. Save this checklist for your next pull session.",
+    cta: "Save this carousel",
+  },
+  {
+    id: "pub-3",
+    title: "First Strict Muscle-Up",
+    platform: "TikTok",
+    scheduled: "Fri 20:00",
+    hook: "Weeks of work. One clean rep.",
+    script: "Beat 1 · Training cut from the early weeks.\nBeat 2 · Chalk up.\nBeat 3 · The rep lands clean.\nBeat 4 · Coach reaction.",
+    caption: "Member progress beats promises.",
+    cta: "Start your first month",
+  },
 ];

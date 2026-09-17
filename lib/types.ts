@@ -104,4 +104,17 @@ export type BoardCard = { id: string; title: string; type: string; status: strin
 
 export type RenderItem = { id: string; title: string; detail: string; status: string };
 
+export type ReadyPost = {
+  id: string;
+  title: string;
+  platform: string;
+  scheduled: string;
+  hook: string;
+  script: string;
+  caption: string;
+  cta: string;
+};
+
+export type PostFile = { name: string; url: string };
+
 export type ContentColumn = { title: string; items: BoardCard[] };

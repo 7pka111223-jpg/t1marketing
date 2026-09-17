@@ -123,17 +123,19 @@ Use provider-side spend limits. Recommended MVP allocation: **$5–10/month max*
 
 ## 6. Publishing
 
-Publishing is intentionally **not auto-enabled** in this scaffold. V1 requires final human approval. The adapter boundary exists in `lib/publishing/`.
+Publishing is **manual by default**. V1 requires final human approval, and the operator posts by
+hand — no platform credentials needed.
 
-Next production step:
+1. A scheduled post is approved (`SCHEDULED → APPROVED`).
+2. It then appears on **Publishing**, which provides the approved copy (hook, script, caption, CTA)
+   to copy, short-lived signed download links for the approved media, and a **Mark as posted**
+   action. Paste the post URL afterwards and its shortcode is stored on the publication so per-post
+   metrics can find it later.
+3. The platform-API delivery path still exists (`decision: "DELIVER"` behind `lib/publishing/`). It
+   throws until Instagram/TikTok credentials are present, so it can never publish by accident.
 
-1. Create/approve Meta app + Instagram publishing permissions.
-2. Create/approve TikTok Content Posting integration.
-3. Implement each adapter behind `publish()`.
-4. Store external IDs and errors in `marketing.publications`.
-5. Never call the adapter unless the publication record is `APPROVED`.
-
-This avoids unsafe accidental public publishing while credentials are incomplete.
+Note: there is no renderer yet (FFmpeg / Motion Canvas is a later step), so the media offered for
+download is whatever was uploaded to Storage and linked to the content item — not a rendered MP4.
 
 ## 7. Data integration with the existing app
 

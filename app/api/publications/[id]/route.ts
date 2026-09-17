@@ -1,18 +1,33 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { isDemoMode } from "@/lib/config";
-import { canDeliver } from "@/lib/publishing/publication-flow";
+import { canDeliver, nextPublicationStatus } from "@/lib/publishing/publication-flow";
+import { canApprovePublication } from "@/lib/publishing/publication-guard";
 import { publishApprovedPublication } from "@/lib/publishing/index";
+import { parsePostUrl } from "@/lib/publishing/post-url";
 
 const DECISION_ROLES = ["OWNER", "MARKETING_ADMIN", "PUBLISHER"];
+const DECISIONS = ["APPROVE", "MARK_POSTED", "DELIVER", "CANCEL"];
 
 export async function POST(request: NextRequest, context: { params: Promise<{ id: string }> }) {
   const { id } = await context.params;
   const body = await request.json().catch(() => ({} as Record<string, unknown>));
-  const decision = String(body.decision ?? "");
-  if (!["APPROVE", "CANCEL"].includes(decision)) {
+  const decision = String(body.decision ?? "").toUpperCase();
+  if (!DECISIONS.includes(decision)) {
     return NextResponse.json({ error: "Unknown decision" }, { status: 400 });
   }
+
+  // Validate the pasted post URL before anything else so a bad link is rejected in demo too.
+  const postUrl = String(body.postUrl ?? "").trim();
+  let externalPostId: string | null = null;
+  if (decision === "MARK_POSTED" && postUrl) {
+    const parsed = parsePostUrl(postUrl);
+    if (!parsed) {
+      return NextResponse.json({ error: "That does not look like an Instagram or TikTok post URL." }, { status: 400 });
+    }
+    externalPostId = parsed.externalId;
+  }
+
   if (isDemoMode()) {
     return NextResponse.json({ ok: true, demo: true, id, decision });
   }
@@ -41,6 +56,60 @@ export async function POST(request: NextRequest, context: { params: Promise<{ id
     return NextResponse.json({ ok: true, status: "CANCELLED" });
   }
 
+  if (decision === "APPROVE") {
+    const guard = canApprovePublication(publication.status);
+    if (!guard.ok) return NextResponse.json({ error: guard.reason }, { status: 400 });
+
+    await supabase.schema("marketing").from("approvals").insert({
+      entity_type: "publication",
+      entity_id: id,
+      stage: "PUBLISH",
+      status: "APPROVED",
+      decision,
+      reviewed_by: userId,
+      reviewed_at: new Date().toISOString(),
+    });
+
+    const approved = nextPublicationStatus(publication.status) ?? "APPROVED";
+    const { error } = await supabase.schema("marketing").from("publications").update({ status: approved }).eq("id", id);
+    if (error) return NextResponse.json({ error: error.message }, { status: 400 });
+    return NextResponse.json({ ok: true, status: approved });
+  }
+
+  if (decision === "MARK_POSTED") {
+    if (publication.status !== "APPROVED") {
+      return NextResponse.json({ error: `Publication is ${publication.status}; only an approved publication can be marked as posted.` }, { status: 400 });
+    }
+
+    await supabase.schema("marketing").from("approvals").insert({
+      entity_type: "publication",
+      entity_id: id,
+      stage: "PUBLISH",
+      status: "APPROVED",
+      decision,
+      feedback: postUrl || null,
+      reviewed_by: userId,
+      reviewed_at: new Date().toISOString(),
+      metadata: { posted_manually: true, external_post_id: externalPostId },
+    });
+
+    const { error } = await supabase
+      .schema("marketing")
+      .from("publications")
+      .update({
+        status: "PUBLISHED",
+        published_at: new Date().toISOString(),
+        external_url: postUrl || null,
+        external_post_id: externalPostId,
+      })
+      .eq("id", id);
+    if (error) return NextResponse.json({ error: error.message }, { status: 400 });
+
+    return NextResponse.json({ ok: true, status: "PUBLISHED", externalPostId });
+  }
+
+  // DELIVER is the platform-API path. It stays available but is only usable once Instagram
+  // or TikTok credentials exist; the manual flow above is the default.
   const guard = canDeliver(publication.status);
   if (!guard.ok) return NextResponse.json({ error: guard.reason }, { status: 400 });
 

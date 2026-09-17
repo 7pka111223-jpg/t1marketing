@@ -12,6 +12,7 @@ import {
   funnel,
   metrics,
   opportunities,
+  readyPosts,
   renderQueue,
   weekPlan,
 } from "@/lib/mock-data";
@@ -32,6 +33,7 @@ import type {
   DashboardMetric,
   FunnelStep,
   Opportunity,
+  ReadyPost,
   RenderItem,
   WeekPlanItem,
 } from "@/lib/types";
@@ -350,6 +352,39 @@ export async function getRenderQueue(): Promise<RenderItem[]> {
   }
 }
 
+export async function getReadyToPost(): Promise<ReadyPost[]> {
+  if (demoMode()) return readyPosts;
+  try {
+    const supabase = await createClient();
+    const { data, error } = await supabase
+      .schema("marketing")
+      .from("publications")
+      .select("id,platform,status,scheduled_at,caption,content_items(title,approved_hook,approved_script,approved_caption,approved_cta)")
+      .eq("status", "APPROVED")
+      .order("scheduled_at", { ascending: true })
+      .limit(50);
+    if (error) throw error;
+    return (data ?? []).map((row: any) => {
+      const item = (row.content_items ?? {}) as Record<string, unknown>;
+      const at = row.scheduled_at ? new Date(row.scheduled_at) : null;
+      const scheduled = at && !Number.isNaN(at.getTime()) ? `${dayLabel(at)} ${formatTime(at)}` : "Not scheduled";
+      return {
+        id: row.id,
+        title: String(item.title ?? "Untitled post"),
+        platform: platformLabel(row.platform),
+        scheduled,
+        hook: String(item.approved_hook ?? ""),
+        script: String(item.approved_script ?? ""),
+        caption: String(row.caption || item.approved_caption || ""),
+        cta: String(item.approved_cta ?? ""),
+      };
+    });
+  } catch (error) {
+    console.error("[marketing:getReadyToPost]", error);
+    return [];
+  }
+}
+
 export async function getCampaigns(): Promise<Campaign[]> {
   if (demoMode()) return campaigns;
   try {
@@ -545,6 +580,12 @@ function formatLabel(value: string | null): "Reel" | "Carousel" | "Story" {
   if (value === "CAROUSEL") return "Carousel";
   if (value === "STORY") return "Story";
   return "Reel";
+}
+
+function platformLabel(value: string | null) {
+  if (value === "INSTAGRAM") return "Instagram";
+  if (value === "TIKTOK") return "TikTok";
+  return "Unknown platform";
 }
 
 function languageLabel(value: string | null): "Mixed" | "AR-EG" | "EN" {

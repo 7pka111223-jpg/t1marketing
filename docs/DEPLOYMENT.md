@@ -77,7 +77,9 @@ human-approval skeleton.
    request without the secret returns `401`.
 9. Analytics → **Sync metrics** captures one snapshot per published post and the funnel fills in
    from `marketing.metrics_latest`.
-10. Campaigns → open a campaign: the detail page shows attributed reach/signups/memberships and its
+10. Publishing → an approved post shows its copy with copy buttons, **Get media** returns download
+    links, and **Mark as posted** with a real post URL moves it to `PUBLISHED`.
+11. Campaigns → open a campaign: the detail page shows attributed reach/signups/memberships and its
     linked content. A conversion posted with `utm_campaign=<campaign slug>` attaches to that campaign.
 
 ## Cost guardrails

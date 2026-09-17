@@ -56,6 +56,11 @@
   `POST /api/metrics/sync`, surfaced as Analytics → **Sync metrics**
 - Dashboard aggregates read `marketing.metrics_latest` (newest snapshot per publication), so repeated
   syncs never inflate reach or engagement
+- Publishing is manual by default: approving a scheduled post moves it to `APPROVED`, the Publishing
+  page hands over the approved copy with copy-to-clipboard and short-lived signed media links, and
+  **Mark as posted** records the pasted post URL plus its parsed shortcode on the publication
+- The platform-API delivery path is retained behind `decision: "DELIVER"` and stays inert without
+  Instagram/TikTok credentials, so nothing can publish by accident
 - Mobile navigation reaches every destination (scrollable bottom bar)
 - Deployment guide in `docs/DEPLOYMENT.md`
 - **Connected to the live Supabase project** (`bpltbnlpkuebhxgbbxrk`), demo mode off:
@@ -82,8 +87,8 @@
 - `npm run typecheck` — clean.
 - `npm run build` — succeeds; all routes compile and fonts resolve.
 - Demo smoke test — all dashboard routes return 200.
-- `npm test` (alias for `node --test`) — 64/64 pass: brief normalization, campaign slugify
-  (unicode/Arabic, truncation), campaign lifecycle transitions, content pipeline progress,
+- `npm test` (alias for `node --test`) — 71/71 pass: post-URL parsing, brief normalization, campaign
+  slugify (unicode/Arabic, truncation), campaign lifecycle transitions, content pipeline progress,
   render-status progress, conversion-ingest validation/PII, Instagram + TikTok insight parsing,
   metrics row shaping, plus the existing status/guard/normalize suites.
 - Runtime smoke tests: `POST /api/conversions` (single, batch, PII/enum rejections);
@@ -94,7 +99,9 @@
   `POST /api/campaigns` rejects a missing name and `PATCH /api/campaigns/[id]` rejects an unknown
   status; Analytics renders with the **Sync metrics** action; `/creative` and `/content` render
   their real render queue, search and pipeline progress; `/approvals` shows the script and CTA
-  blocks and a decision is accepted.
+  blocks and a decision is accepted; `/publishing` renders the copy set with 12 copy buttons and a
+  mark-as-posted form, `POST /api/publications/[id]` rejects an unknown decision and a non-post URL,
+  and `GET /api/publications/[id]/asset` returns a file list.
 - Known Next.js streaming tradeoff: an unknown campaign id renders the not-found UI but returns
   `200`, because `app/(dashboard)/loading.tsx` commits the response before the page throws
   `notFound()`. A route that does not exist at all still returns `404`.

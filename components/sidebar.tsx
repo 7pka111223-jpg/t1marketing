@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Activity, BarChart3, CalendarDays, CheckSquare2, FlaskConical, Images, LayoutDashboard, Settings, Target, Users, FileText } from "lucide-react";
+import { Activity, BarChart3, CalendarDays, CheckSquare2, FlaskConical, Images, LayoutDashboard, Send, Settings, Target, Users, FileText } from "lucide-react";
 
 const nav = [
   ["/", "Command", LayoutDashboard],
@@ -11,6 +11,7 @@ const nav = [
   ["/content", "Content", FileText],
   ["/creative", "Creative", Images],
   ["/approvals", "Approvals", CheckSquare2],
+  ["/publishing", "Publishing", Send],
   ["/calendar", "Calendar", CalendarDays],
   ["/audience", "Audience", Users],
   ["/analytics", "Analytics", BarChart3],

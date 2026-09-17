@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BarChart3, CalendarDays, CheckSquare2, FileText, FlaskConical, Images, LayoutDashboard, Settings, Target, Users } from "lucide-react";
+import { BarChart3, CalendarDays, CheckSquare2, FileText, FlaskConical, Images, LayoutDashboard, Send, Settings, Target, Users } from "lucide-react";
 
 const items = [
   ["/", "Home", LayoutDashboard],
@@ -10,6 +10,7 @@ const items = [
   ["/content", "Content", FileText],
   ["/creative", "Creative", Images],
   ["/approvals", "Approve", CheckSquare2],
+  ["/publishing", "Publish", Send],
   ["/calendar", "Calendar", CalendarDays],
   ["/audience", "Audience", Users],
   ["/analytics", "Analytics", BarChart3],
