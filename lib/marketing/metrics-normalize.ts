@@ -5,7 +5,10 @@ export type PlatformMetrics = Partial<Record<(typeof METRIC_KEYS)[number], numbe
 export function normalizePlatformMetrics(raw: Record<string, unknown>): PlatformMetrics {
   const result: PlatformMetrics = {};
   for (const key of METRIC_KEYS) {
-    if (!(key in raw)) continue;
+    if (!(key in raw)) {
+      result[key] = 0;
+      continue;
+    }
     const value = Number(raw[key]);
     result[key] = Number.isFinite(value) && value >= 0 ? value : 0;
   }
