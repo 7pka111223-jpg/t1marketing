@@ -3,7 +3,7 @@ import { aiConfig } from "@/lib/config";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { generateOpportunities } from "@/lib/ai/generate";
 import { deriveAssetTags } from "@/lib/marketing/asset-tags";
-import { buildMetricsRows } from "./metrics-sync-row-builder.ts";
+import { syncPublicationMetrics } from "@/lib/marketing/sync-metrics";
 
 export const weeklyPlanner = schedules.task({
   id: "weekly-content-planner",
@@ -74,27 +74,9 @@ export const mediaIngestion = task({
   },
 });
 
-export const metricsSync = task({
+export const metricsSync = schedules.task({
   id: "metrics-sync",
+  cron: { pattern: "0 6 * * *", timezone: "Africa/Cairo" },
   maxDuration: 900,
-  run: async () => {
-    const supabase = createAdminClient();
-    const { data: publications, error } = await supabase
-      .from("publications")
-      .select("id")
-      .eq("status", "PUBLISHED")
-      .not("external_post_id", "is", null)
-      .order("published_at", { ascending: false })
-      .limit(50);
-    if (error) throw error;
-
-    const rows = buildMetricsRows(publications ?? []);
-    if (rows.length === 0) return { status: "no-published-posts", captured: 0 };
-
-    // Platform insight APIs are not approved yet; rows arrive zero-filled so the
-    // funnel stays live and each sync is a real, auditable snapshot.
-    const { error: insertError } = await supabase.from("metrics").insert(rows);
-    if (insertError) throw insertError;
-    return { status: "captured", captured: rows.length };
-  },
+  run: async () => syncPublicationMetrics(),
 });

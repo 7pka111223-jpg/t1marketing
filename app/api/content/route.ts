@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { isDemoMode } from "@/lib/config";
+import { isUuid } from "@/lib/marketing/conversion-ingest";
 
 const CONTENT_TYPES = ["REEL", "CAROUSEL", "STORY", "STATIC"];
 const PILLARS = ["EDUCATION", "COMMUNITY", "CULTURE", "CHALLENGE", "CONVERSION"];
@@ -21,6 +22,8 @@ export async function POST(request: NextRequest) {
   const pillar = pick(body.pillar, PILLARS, "EDUCATION");
   const objective = pick(body.objective, OBJECTIVES, "BRAND_AWARENESS");
   const languageMode = pick(body.languageMode, LANGUAGE_MODES, "MIXED");
+  const campaign = String(body.campaignId ?? "");
+  const campaignId = isUuid(campaign) ? campaign : null;
 
   if (isDemoMode()) {
     return NextResponse.json({ ok: true, demo: true, contentId: `demo-${Date.now()}` });
@@ -43,6 +46,7 @@ export async function POST(request: NextRequest) {
       pillar,
       objective,
       language_mode: languageMode,
+      campaign_id: campaignId,
       status: "IDEA",
       created_by: userId,
       brief: { created_from: "dashboard", created_at: new Date().toISOString() },

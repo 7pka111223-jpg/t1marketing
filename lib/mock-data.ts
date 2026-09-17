@@ -2,9 +2,11 @@ import type {
   ApprovalItem,
   AssetItem,
   AudienceSignalRow,
+  Campaign,
   ConvertDriver,
   DashboardMetric,
   Opportunity,
+  RenderItem,
   WeekPlanItem,
 } from "@/lib/types";
 
@@ -22,7 +24,9 @@ export const approvalItems: ApprovalItem[] = [
     type: "Reel",
     stage: "Creative",
     hook: "Your pull isn't the problem.",
+    script: "Beat 1 · Bar stays close to the chest.\nBeat 2 · Show the rep that fails at the transition.\nBeat 3 · Drill the turnover at the bar.\nBeat 4 · One clean rep, no cuts.",
     caption: "Most failed muscle-ups lose the rep at the transition. Keep the bar close, stay aggressive, and drill the turnover. احفظ الفيديو وجربه في التمرين الجاي.",
+    cta: "Book a free assessment",
     objective: "Brand awareness",
     audience: "Intermediate calisthenics athletes",
     assets: 4,
@@ -35,7 +39,9 @@ export const approvalItems: ApprovalItem[] = [
     type: "Carousel",
     stage: "Copy",
     hook: "5 mistakes killing your pull-up.",
+    script: "Slide 1 · Title.\nSlides 2–6 · One mistake each, with the fix underneath.\nSlide 7 · Save this for your next pull session.\nSlide 8 · How to start.",
     caption: "Fix the basics before chasing more reps. Save this checklist for your next pull session.",
+    cta: "Save this carousel",
     objective: "Authority",
     audience: "Beginner to intermediate athletes",
     assets: 7,
@@ -48,7 +54,9 @@ export const approvalItems: ApprovalItem[] = [
     type: "Reel",
     stage: "Brief",
     hook: "Weeks of work. One clean rep.",
+    script: "Beat 1 · Training cut from the early weeks.\nBeat 2 · Chalk up.\nBeat 3 · The rep lands clean.\nBeat 4 · Coach reaction.",
     caption: "Member progress beats promises.",
+    cta: "Start your first month",
     objective: "Social proof",
     audience: "Prospective members",
     assets: 3,
@@ -120,4 +128,16 @@ export const assetLibrary: AssetItem[] = [
   { id: "asset-2", name: "Member first strict muscle-up", kind: "IMG", meta: "Vertical · 88% relevance · marketing cleared", badge: "Unused" },
   { id: "asset-3", name: "Tuesday pull session", kind: "VID", meta: "Vertical · 84% relevance · marketing cleared", badge: "Unused" },
   { id: "asset-4", name: "Handstand wall drills", kind: "IMG", meta: "Vertical · 80% relevance · marketing cleared", badge: "Unused" },
+];
+
+export const campaigns: Campaign[] = [
+  { id: "cmp-1", name: "New Cairo Beginners", objective: "Brand awareness + memberships", status: "ACTIVE", window: "12 Sep → 30 Nov", contentCount: 6 },
+  { id: "cmp-2", name: "Muscle-Up Season", objective: "Memberships", status: "DRAFT", window: "No dates set", contentCount: 2 },
+  { id: "cmp-3", name: "Ramadan Reset", objective: "Brand awareness", status: "COMPLETED", window: "1 Mar → 10 Apr", contentCount: 9 },
+];
+
+export const renderQueue: RenderItem[] = [
+  { id: "render-1", title: "Muscle-Up Transition", detail: "REEL · v1 · cut + subtitles + branded titles", status: "RENDERING" },
+  { id: "render-2", title: "5 Pull-Up Mistakes", detail: "CAROUSEL · v1 · 8-slide carousel", status: "PENDING" },
+  { id: "render-3", title: "Max Hang Challenge", detail: "REEL · v2 · member PR cut", status: "READY" },
 ];

@@ -6,13 +6,18 @@ import {
   audienceSignals,
   audienceStats,
   calendarItems,
+  campaigns,
   contentColumns,
   convertDrivers,
   funnel,
   metrics,
   opportunities,
+  renderQueue,
   weekPlan,
 } from "@/lib/mock-data";
+import { isCampaignStatus } from "@/lib/marketing/campaign-status";
+import { isRenderStatus } from "@/lib/marketing/render-status";
+import { slugify } from "@/lib/marketing/slug";
 import type {
   AnalyticsData,
   ApprovalItem,
@@ -20,11 +25,14 @@ import type {
   AudienceSignalRow,
   BoardCard,
   CalendarEntry,
+  Campaign,
+  CampaignDetail,
   ContentColumn,
   ConvertDriver,
   DashboardMetric,
   FunnelStep,
   Opportunity,
+  RenderItem,
   WeekPlanItem,
 } from "@/lib/types";
 
@@ -72,7 +80,7 @@ export async function getApprovalQueue(): Promise<ApprovalItem[]> {
     const { data, error } = await supabase
       .schema("marketing")
       .from("content_items")
-      .select("id,title,content_type,status,objective,language_mode,brief,approved_hook,approved_caption")
+      .select("id,title,content_type,status,objective,language_mode,brief,approved_hook,approved_script,approved_caption,approved_cta")
       .in("status", ["BRIEF_REVIEW", "COPY_REVIEW", "CREATIVE_REVIEW", "READY_TO_SCHEDULE"])
       .order("updated_at", { ascending: true });
     if (error) throw error;
@@ -84,7 +92,9 @@ export async function getApprovalQueue(): Promise<ApprovalItem[]> {
         type: formatLabel(row.content_type),
         stage: stageFromStatus(row.status),
         hook: row.approved_hook || String(brief.hook ?? "Hook awaiting review"),
+        script: row.approved_script || String(brief.script ?? "Script awaiting review"),
         caption: row.approved_caption || String(brief.caption ?? "Caption awaiting review"),
+        cta: row.approved_cta || String(brief.cta ?? "CTA awaiting review"),
         objective: objectiveLabel(row.objective),
         audience: String(brief.audience ?? "TripleOne audience"),
         assets: Number(brief.asset_count ?? 0),
@@ -113,7 +123,7 @@ export async function getContentBoard(): Promise<ContentColumn[]> {
 
     const groups: Record<string, BoardCard[]> = { Ideas: [], "Copy ready": [], Creative: [], Approved: [] };
     for (const row of data ?? []) {
-      const card: BoardCard = { id: row.id, title: row.title, type: formatLabel(row.content_type) };
+      const card: BoardCard = { id: row.id, title: row.title, type: formatLabel(row.content_type), status: row.status };
       if (["IDEA", "RESEARCHED", "BRIEF_REVIEW"].includes(row.status)) groups.Ideas.push(card);
       else if (["BRIEF_APPROVED", "COPY_REVIEW"].includes(row.status)) groups["Copy ready"].push(card);
       else if (["COPY_APPROVED", "CREATIVE_REVIEW"].includes(row.status)) groups.Creative.push(card);
@@ -131,7 +141,7 @@ export async function getDashboardMetrics(): Promise<DashboardMetric[]> {
   try {
     const supabase = await createClient();
     const [metricsRes, conversionsRes] = await Promise.all([
-      supabase.schema("marketing").from("metrics").select("reach,profile_visits,views,likes,saves,shares"),
+      supabase.schema("marketing").from("metrics_latest").select("reach,profile_visits,views,likes,saves,shares"),
       supabase.schema("marketing").from("conversions").select("event_type"),
     ]);
     if (metricsRes.error) throw metricsRes.error;
@@ -243,7 +253,7 @@ export async function getAnalytics(): Promise<AnalyticsData> {
   try {
     const supabase = await createClient();
     const [metricsRes, conversionsRes, contentRes] = await Promise.all([
-      supabase.schema("marketing").from("metrics").select("reach,profile_visits,likes,comments,shares,saves"),
+      supabase.schema("marketing").from("metrics_latest").select("reach,profile_visits,likes,comments,shares,saves"),
       supabase.schema("marketing").from("conversions").select("event_type,content_item_id"),
       supabase.schema("marketing").from("content_items").select("id,title"),
     ]);
@@ -313,6 +323,145 @@ export async function getAssetLibrary(): Promise<AssetItem[]> {
   }
 }
 
+export async function getRenderQueue(): Promise<RenderItem[]> {
+  if (demoMode()) return renderQueue;
+  try {
+    const supabase = await createClient();
+    const { data, error } = await supabase
+      .schema("marketing")
+      .from("creatives")
+      .select("id,creative_type,version,render_status,content_items(title)")
+      .order("created_at", { ascending: false })
+      .limit(20);
+    if (error) throw error;
+    return (data ?? []).map((row: any) => {
+      const title = row.content_items?.title ?? "Untitled creative";
+      const version = row.version ?? 1;
+      return {
+        id: row.id,
+        title: String(title),
+        detail: `${String(row.creative_type)} · v${version}`,
+        status: isRenderStatus(row.render_status) ? row.render_status : "PENDING",
+      };
+    });
+  } catch (error) {
+    console.error("[marketing:getRenderQueue]", error);
+    return [];
+  }
+}
+
+export async function getCampaigns(): Promise<Campaign[]> {
+  if (demoMode()) return campaigns;
+  try {
+    const supabase = await createClient();
+    const { data, error } = await supabase
+      .schema("marketing")
+      .from("campaigns")
+      .select("id,name,objective,status,starts_at,ends_at,content_items(count)")
+      .order("created_at", { ascending: false })
+      .limit(50);
+    if (error) throw error;
+    return (data ?? []).map((row: any) => ({
+      id: row.id,
+      name: row.name,
+      objective: objectiveLabel(row.objective),
+      status: isCampaignStatus(row.status) ? row.status : "DRAFT",
+      window: campaignWindow(row.starts_at, row.ends_at),
+      contentCount: Number(row.content_items?.[0]?.count ?? 0),
+    }));
+  } catch (error) {
+    console.error("[marketing:getCampaigns]", error);
+    return [];
+  }
+}
+
+export async function getCampaignDetail(id: string): Promise<CampaignDetail | null> {
+  if (demoMode()) return demoCampaignDetail(id);
+  try {
+    const supabase = await createClient();
+    const [campaignRes, summaryRes, contentRes] = await Promise.all([
+      supabase.schema("marketing").from("campaigns").select("id,name,slug,objective,status,starts_at,ends_at").eq("id", id).maybeSingle(),
+      supabase.schema("marketing").from("attribution_campaign_summary").select("reach,engagement,app_visits,signups,bookings,memberships").eq("id", id).maybeSingle(),
+      supabase.schema("marketing").from("content_items").select("id,title,content_type,status").eq("campaign_id", id).order("updated_at", { ascending: false }).limit(50),
+    ]);
+    if (campaignRes.error) throw campaignRes.error;
+    if (!campaignRes.data) return null;
+    // The summary view depends on migrations 002/004; a missing view degrades to no attribution
+    // instead of hiding the campaign and its linked content.
+    if (summaryRes.error) console.error("[marketing:getCampaignDetail:summary]", summaryRes.error);
+    if (contentRes.error) console.error("[marketing:getCampaignDetail:content]", contentRes.error);
+
+    const campaign = campaignRes.data;
+    const summary = (summaryRes.data ?? {}) as Record<string, unknown>;
+    const total = (key: string) => Number(summary[key] ?? 0);
+
+    return {
+      id: campaign.id,
+      name: campaign.name,
+      slug: campaign.slug ?? "",
+      objective: objectiveLabel(campaign.objective),
+      status: isCampaignStatus(campaign.status) ? campaign.status : "DRAFT",
+      window: campaignWindow(campaign.starts_at, campaign.ends_at),
+      metrics: [
+        { label: "Reach", value: formatNumber(total("reach")) },
+        { label: "Engagement", value: formatNumber(total("engagement")) },
+        { label: "Signups", value: formatNumber(total("signups")) },
+        { label: "Memberships", value: formatNumber(total("memberships")) },
+      ],
+      conversions: weighted([
+        { label: "App visits", value: total("app_visits") },
+        { label: "Signups", value: total("signups") },
+        { label: "Bookings", value: total("bookings") },
+        { label: "Memberships", value: total("memberships") },
+      ]),
+      content: (contentRes.data ?? []).map((row: any) => ({ id: row.id, title: row.title, type: formatLabel(row.content_type), status: String(row.status) })),
+    };
+  } catch (error) {
+    console.error("[marketing:getCampaignDetail]", error);
+    return null;
+  }
+}
+
+const DEMO_CONTENT_STATUS: Record<string, string> = {
+  Ideas: "IDEA",
+  "Copy ready": "COPY_REVIEW",
+  Creative: "CREATIVE_REVIEW",
+  Approved: "READY_TO_SCHEDULE",
+};
+
+function demoCampaignDetail(id: string): CampaignDetail | null {
+  const campaign = campaigns.find((entry) => entry.id === id);
+  if (!campaign) return null;
+  return {
+    id: campaign.id,
+    name: campaign.name,
+    slug: slugify(campaign.name),
+    objective: campaign.objective,
+    status: campaign.status,
+    window: campaign.window,
+    metrics,
+    conversions: weighted([
+      { label: "App visits", value: 486 },
+      { label: "Signups", value: 112 },
+      { label: "Bookings", value: 38 },
+      { label: "Memberships", value: 17 },
+    ]),
+    content: contentColumns.flatMap((column) =>
+      column.items.map((title, index) => ({
+        id: `${column.title}-${index}`,
+        title,
+        type: index % 2 === 0 ? "Reel" : "Carousel",
+        status: DEMO_CONTENT_STATUS[column.title] ?? "IDEA",
+      })),
+    ),
+  };
+}
+
+function weighted(rows: { label: string; value: number }[]): ConvertDriver[] {
+  const max = Math.max(1, ...rows.map((row) => row.value));
+  return rows.map((row) => ({ ...row, weight: Math.round((row.value / max) * 100) }));
+}
+
 function demoBoard(): ContentColumn[] {
   return contentColumns.map((col) => ({
     title: col.title,
@@ -320,6 +469,7 @@ function demoBoard(): ContentColumn[] {
       id: `${col.title}-${index + 1}`,
       title,
       type: index % 2 === 0 ? "Reel" : "Carousel",
+      status: DEMO_CONTENT_STATUS[col.title] ?? "IDEA",
     })),
   }));
 }
@@ -443,4 +593,20 @@ function formatTime(date: Date) {
 const dayFormatter = new Intl.DateTimeFormat("en", { weekday: "short", timeZone: "Africa/Cairo" });
 function dayLabel(date: Date) {
   return dayFormatter.format(date).toUpperCase();
+}
+
+const dayMonthFormatter = new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short", timeZone: "Africa/Cairo" });
+
+function formatDay(value: unknown): string | null {
+  if (!value) return null;
+  const date = new Date(String(value));
+  return Number.isNaN(date.getTime()) ? null : dayMonthFormatter.format(date);
+}
+
+function campaignWindow(startsAt: unknown, endsAt: unknown): string {
+  const start = formatDay(startsAt);
+  const end = formatDay(endsAt);
+  if (!start && !end) return "No dates set";
+  if (start && end) return `${start} → ${end}`;
+  return start ? `From ${start}` : `Until ${end}`;
 }

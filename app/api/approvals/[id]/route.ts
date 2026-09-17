@@ -41,7 +41,7 @@ export async function POST(request: NextRequest, context: { params: Promise<{ id
   const { data: item, error: readError } = await supabase
     .schema("marketing")
     .from("content_items")
-    .select("id,status,brief,approved_hook,approved_caption")
+    .select("id,status,brief,approved_hook,approved_script,approved_caption,approved_cta")
     .eq("id", id)
     .single();
   if (readError || !item) return NextResponse.json({ error: readError?.message ?? "Content not found" }, { status: 404 });
@@ -63,12 +63,16 @@ export async function POST(request: NextRequest, context: { params: Promise<{ id
 
   const brief = (item.brief ?? {}) as Record<string, unknown>;
   const hook = item.approved_hook ?? (brief.hook ? String(brief.hook) : null);
+  const script = item.approved_script ?? (brief.script ? String(brief.script) : null);
   const caption = item.approved_caption ?? (brief.caption ? String(brief.caption) : null);
+  const cta = item.approved_cta ?? (brief.cta ? String(brief.cta) : null);
 
   const update: Record<string, unknown> = { status: nextStatus };
   if (decision === "APPROVE") {
     if (hook) update.approved_hook = hook;
+    if (script) update.approved_script = script;
     if (caption) update.approved_caption = caption;
+    if (cta) update.approved_cta = cta;
   }
 
   const { error: updateError } = await supabase.schema("marketing").from("content_items").update(update).eq("id", id);
@@ -76,7 +80,9 @@ export async function POST(request: NextRequest, context: { params: Promise<{ id
 
   if (decision === "APPROVE") {
     await recordVersion(supabase, id, "HOOK", hook, userId);
+    await recordVersion(supabase, id, "SCRIPT", script, userId);
     await recordVersion(supabase, id, "CAPTION", caption, userId);
+    await recordVersion(supabase, id, "CTA", cta, userId);
   }
 
   await completeWorkflowToken(supabase, id, brief, decision, body);

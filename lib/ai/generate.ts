@@ -1,6 +1,9 @@
 import { generateText } from "@/lib/ai/openrouter";
 import { brandSystemPrompt } from "@/lib/ai/prompts";
 import { aiConfig } from "@/lib/config";
+import { normalizeBrief, type GeneratedBrief } from "./brief";
+
+export type { GeneratedBrief };
 
 export type GeneratedOpportunity = {
   title: string;
@@ -9,13 +12,6 @@ export type GeneratedOpportunity = {
   languageMode: "EN" | "AR_EG" | "MIXED";
   scores: Record<string, number>;
   totalScore: number;
-};
-
-export type GeneratedBrief = {
-  hook: string;
-  caption: string;
-  audience: string;
-  performanceHypothesis: string;
 };
 
 const FORMATS = ["REEL", "CAROUSEL", "STORY", "STATIC"];
@@ -45,18 +41,17 @@ export async function generateBrief(input: { title: string; format: string; lang
     { role: "system", content: brandSystemPrompt },
     {
       role: "user",
-      content: `Write a content brief as strict JSON with keys hook, caption, audience, performanceHypothesis. Hook must be under 12 words and specific to the drill. Caption should invite a save or a visit. Use Egyptian Arabic naturally when the language mode is AR_EG or MIXED. Only JSON, no prose. Title: ${input.title}. Format: ${input.format}. Language mode: ${input.languageMode}. Objective: ${input.objective}.`,
+      content: `Write a content brief as strict JSON with exactly these keys: hook, script, caption, cta, audience, performanceHypothesis.
+- hook: one line, under 12 words, specific to the drill.
+- script: a beat-by-beat shooting script of 3-6 short lines, suited to the format.
+- caption: invites a save or a visit.
+- cta: one short line naming the single action to take.
+- audience: who this is for.
+- performanceHypothesis: what should happen and why, in one sentence.
+Use Egyptian Arabic naturally when the language mode is AR_EG or MIXED; never translate literally. Only JSON, no prose. Title: ${input.title}. Format: ${input.format}. Language mode: ${input.languageMode}. Objective: ${input.objective}.`,
     },
   ]);
-  const parsed = extractJson(raw);
-  if (!parsed || Array.isArray(parsed) || typeof parsed !== "object") return null;
-  const record = parsed as Record<string, unknown>;
-  return {
-    hook: String(record.hook ?? "").trim(),
-    caption: String(record.caption ?? "").trim(),
-    audience: String(record.audience ?? "").trim(),
-    performanceHypothesis: String(record.performanceHypothesis ?? "").trim(),
-  };
+  return normalizeBrief(extractJson(raw));
 }
 
 function normalizeOpportunity(input: unknown): GeneratedOpportunity | null {

@@ -53,7 +53,9 @@ export async function POST(_request: Request, context: { params: Promise<{ id: s
         ? {
             generated_from_opportunity: true,
             hook: brief.hook,
+            script: brief.script,
             caption: brief.caption,
+            cta: brief.cta,
             audience: brief.audience,
             performance_hypothesis: brief.performanceHypothesis,
             asset_count: 0,
@@ -82,7 +84,9 @@ export async function POST(_request: Request, context: { params: Promise<{ id: s
 async function recordBriefVersions(supabase: SupabaseServerClient, contentItemId: string, brief: GeneratedBrief, userId: string) {
   const rows = [
     { component: "HOOK", content: brief.hook },
+    { component: "SCRIPT", content: brief.script },
     { component: "CAPTION", content: brief.caption },
+    { component: "CTA", content: brief.cta },
   ].filter((row) => row.content);
   if (rows.length === 0) return;
   const { error } = await supabase.schema("marketing").from("content_versions").insert(
