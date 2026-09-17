@@ -219,8 +219,9 @@ snapshot per publication — so repeated syncs never inflate reach or engagement
 **Account-level numbers are entered by hand.** Reach and profile visits exist only in the native
 Insights screen (or the official API) — they never appear on a public page, so they cannot be
 scraped by anything. Analytics has an **Enter weekly numbers** form that writes to
-`marketing.account_metrics`; `account_metrics_latest` keeps the newest snapshot per platform, and
-reach/profile visits prefer those values over per-post sums.
+`marketing.account_metrics` (reach, profile visits, followers, and engagement if you have it);
+`account_metrics_latest` keeps the newest snapshot per platform, and reach/profile visits prefer
+those values over per-post sums.
 
 ## $20 monthly operating target
 
