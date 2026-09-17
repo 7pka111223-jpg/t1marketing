@@ -2,11 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Activity, BarChart3, CalendarDays, CheckSquare2, FlaskConical, Images, LayoutDashboard, Settings, Users, FileText } from "lucide-react";
+import { Activity, BarChart3, CalendarDays, CheckSquare2, FlaskConical, Images, LayoutDashboard, Settings, Target, Users, FileText } from "lucide-react";
 
 const nav = [
   ["/", "Command", LayoutDashboard],
   ["/research", "Research", FlaskConical],
+  ["/campaigns", "Campaigns", Target],
   ["/content", "Content", FileText],
   ["/creative", "Creative", Images],
   ["/approvals", "Approvals", CheckSquare2],

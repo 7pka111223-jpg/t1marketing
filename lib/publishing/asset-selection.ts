@@ -1,6 +1,3 @@
-import assert from "node:assert/strict";
-import { test } from "node:test";
-
 type AssetRow = {
   id: string;
   storage_path: string;

@@ -2,7 +2,7 @@
 import { ChangeEvent, useRef, useState } from "react";
 import { Upload } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
-import { isDemoMode, triggerConfig } from "@/lib/config";
+import { isDemoMode } from "@/lib/config";
 
 export function AssetUploader(){
   const inputRef=useRef<HTMLInputElement | null>(null);
@@ -27,10 +27,10 @@ export function AssetUploader(){
       const type=file.type.startsWith("video/")?"VIDEO":file.type.startsWith("image/")?"PHOTO":file.type.startsWith("audio/")?"AUDIO":"GRAPHIC";
       const {data:assetRow,error:dbError}=await supabase.schema("marketing").from("assets").insert({storage_provider:"SUPABASE",storage_path:path,asset_type:type,mime_type:file.type,marketing_cleared:true,consent_status:"CLEARED",metadata:{original_name:file.name,size:file.size}}).select("id").single();
       if(dbError) throw dbError;
-      if(triggerConfig.configured && assetRow){
+      if(assetRow){
         try{
-          const { tasks } = await import("@trigger.dev/sdk");
-          await tasks.trigger("media-ingestion", { assetId: assetRow.id });
+          const response=await fetch(`/api/assets/${assetRow.id}/ingest`,{method:"POST"});
+          if(!response.ok) throw new Error("Indexing request failed.");
         }catch(ingestError){
           console.error("[asset-uploader:media-ingestion]", ingestError);
           setMessage(`${file.name} stored. Indexing will retry when the workflow runner is reachable.`);

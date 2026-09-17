@@ -4,8 +4,9 @@ import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Plus, X } from "lucide-react";
 import { useToast } from "@/components/toast";
+import type { CampaignOption } from "@/lib/types";
 
-export function NewContentButton() {
+export function NewContentButton({ campaigns = [] }: { campaigns?: CampaignOption[] }) {
   const router = useRouter();
   const { push } = useToast();
   const [open, setOpen] = useState(false);
@@ -26,6 +27,7 @@ export function NewContentButton() {
           pillar: String(data.get("pillar") ?? "EDUCATION"),
           objective: String(data.get("objective") ?? "BRAND_AWARENESS"),
           languageMode: String(data.get("languageMode") ?? "MIXED"),
+          campaignId: String(data.get("campaignId") ?? ""),
         }),
       });
       const detail = await response.json().catch(() => null);
@@ -54,6 +56,7 @@ export function NewContentButton() {
         <div className="form-row"><label>Pillar</label><select name="pillar" defaultValue="EDUCATION"><option value="EDUCATION">Education</option><option value="COMMUNITY">Community</option><option value="CULTURE">Culture</option><option value="CHALLENGE">Challenge</option><option value="CONVERSION">Conversion</option></select></div>
         <div className="form-row"><label>Objective</label><select name="objective" defaultValue="BRAND_AWARENESS"><option value="BRAND_AWARENESS">Brand awareness</option><option value="MEMBERSHIPS">Memberships</option><option value="BOTH">Both</option></select></div>
         <div className="form-row"><label>Language</label><select name="languageMode" defaultValue="MIXED"><option value="MIXED">Mixed (AR-EG + EN)</option><option value="AR_EG">Egyptian Arabic</option><option value="EN">English</option></select></div>
+        {campaigns.length > 0 && <div className="form-row"><label>Campaign</label><select name="campaignId" defaultValue=""><option value="">No campaign</option>{campaigns.map((campaign) => <option value={campaign.id} key={campaign.id}>{campaign.name}</option>)}</select></div>}
         <div className="actions" style={{ justifyContent: "flex-end" }}><button type="button" className="btn btn-secondary" onClick={() => setOpen(false)}>Cancel</button><button className="btn btn-primary" disabled={busy}>{busy ? "Creating" : "Create"}</button></div>
       </form>
     </div>}

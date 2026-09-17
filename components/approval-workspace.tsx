@@ -52,7 +52,9 @@ export function ApprovalWorkspace({ initial }: { initial: ApprovalItem[] }) {
         <div className="review-block"><div className="review-label">Stage</div><span className="badge badge-red">{active.stage} review</span></div>
         <div className="review-block"><div className="review-label">Audience</div><div className="review-value">{active.audience}</div></div>
         <div className="review-block"><div className="review-label">Language</div><div className="review-value">{active.language}</div></div>
+        <div className="review-block"><div className="review-label">Script</div><div className="review-value" style={{ whiteSpace: "pre-line" }}>{active.script}</div></div>
         <div className="review-block"><div className="review-label">Caption</div><div className="review-value">{active.caption}</div></div>
+        <div className="review-block"><div className="review-label">CTA</div><div className="review-value">{active.cta}</div></div>
         <div className="review-block"><div className="review-label">Performance hypothesis</div><div className="review-value">{active.hypothesis}</div></div>
         <div className="review-block">
           <div className="review-label">Reloop only what needs work</div>

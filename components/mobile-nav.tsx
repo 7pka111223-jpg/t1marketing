@@ -1,11 +1,12 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BarChart3, CalendarDays, CheckSquare2, FileText, FlaskConical, Images, LayoutDashboard, Settings, Users } from "lucide-react";
+import { BarChart3, CalendarDays, CheckSquare2, FileText, FlaskConical, Images, LayoutDashboard, Settings, Target, Users } from "lucide-react";
 
 const items = [
   ["/", "Home", LayoutDashboard],
   ["/research", "Research", FlaskConical],
+  ["/campaigns", "Campaigns", Target],
   ["/content", "Content", FileText],
   ["/creative", "Creative", Images],
   ["/approvals", "Approve", CheckSquare2],
