@@ -117,4 +117,13 @@ export type ReadyPost = {
 
 export type PostFile = { name: string; url: string };
 
+export type AccountMetric = {
+  platform: string;
+  capturedAt: string;
+  reach: number;
+  profileVisits: number;
+  followers: number;
+  source: string;
+};
+
 export type ContentColumn = { title: string; items: BoardCard[] };

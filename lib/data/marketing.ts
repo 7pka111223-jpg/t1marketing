@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { isDemoMode } from "@/lib/config";
 import {
+  accountMetrics,
   approvalItems,
   assetLibrary,
   audienceSignals,
@@ -20,6 +21,7 @@ import { isCampaignStatus } from "@/lib/marketing/campaign-status";
 import { isRenderStatus } from "@/lib/marketing/render-status";
 import { slugify } from "@/lib/marketing/slug";
 import type {
+  AccountMetric,
   AnalyticsData,
   ApprovalItem,
   AssetItem,
@@ -142,25 +144,61 @@ export async function getDashboardMetrics(): Promise<DashboardMetric[]> {
   if (demoMode()) return metrics;
   try {
     const supabase = await createClient();
-    const [metricsRes, conversionsRes] = await Promise.all([
+    const [accountRes, postRes, conversionsRes] = await Promise.all([
+      supabase.schema("marketing").from("account_metrics_latest").select("reach,profile_visits"),
       supabase.schema("marketing").from("metrics_latest").select("reach,profile_visits,views,likes,saves,shares"),
       supabase.schema("marketing").from("conversions").select("event_type"),
     ]);
-    if (metricsRes.error) throw metricsRes.error;
     if (conversionsRes.error) throw conversionsRes.error;
-    const rows = metricsRes.data ?? [];
+    // The two metric sources live in different migrations, so each degrades on its own instead of
+    // blanking the whole dashboard when one is missing.
+    if (accountRes.error) console.error("[marketing:getDashboardMetrics:account]", accountRes.error);
+    if (postRes.error) console.error("[marketing:getDashboardMetrics:posts]", postRes.error);
+
+    const account = accountRes.data ?? [];
+    const posts = postRes.data ?? [];
     const conversions = conversionsRes.data ?? [];
-    const sum = (key: string) => rows.reduce((total, row) => total + Number((row as Record<string, unknown>)[key] ?? 0), 0);
+    const sum = (rows: unknown[], key: string) => rows.reduce<number>((total, row) => total + Number((row as Record<string, unknown>)[key] ?? 0), 0);
     const count = (type: string) => conversions.filter((c) => c.event_type === type).length;
+
+    // Prefer account-level numbers when present: reach and profile visits belong to the account
+    // as a whole and are absent from any single post's snapshot.
+    const reach = account.length > 0 ? sum(account, "reach") : sum(posts, "reach");
+    const profileVisits = account.length > 0 ? sum(account, "profile_visits") : sum(posts, "profile_visits");
+
     return [
-      { label: "Reach", value: formatNumber(sum("reach")) },
-      { label: "Profile visits", value: formatNumber(sum("profile_visits")) },
+      { label: "Reach", value: formatNumber(reach) },
+      { label: "Profile visits", value: formatNumber(profileVisits) },
       { label: "App signups", value: formatNumber(count("SIGNUP")) },
       { label: "Memberships", value: formatNumber(count("MEMBERSHIP")) },
     ];
   } catch (error) {
     console.error("[marketing:getDashboardMetrics]", error);
     return emptyMetrics();
+  }
+}
+
+export async function getAccountMetrics(): Promise<AccountMetric[]> {
+  if (demoMode()) return accountMetrics;
+  try {
+    const supabase = await createClient();
+    const { data, error } = await supabase
+      .schema("marketing")
+      .from("account_metrics_latest")
+      .select("platform,captured_at,reach,profile_visits,followers,source")
+      .order("platform", { ascending: true });
+    if (error) throw error;
+    return (data ?? []).map((row: any) => ({
+      platform: platformLabel(row.platform),
+      capturedAt: formatDay(row.captured_at) ?? "—",
+      reach: Number(row.reach ?? 0),
+      profileVisits: Number(row.profile_visits ?? 0),
+      followers: Number(row.followers ?? 0),
+      source: String(row.source ?? "MANUAL"),
+    }));
+  } catch (error) {
+    console.error("[marketing:getAccountMetrics]", error);
+    return [];
   }
 }
 
@@ -254,7 +292,8 @@ export async function getAnalytics(): Promise<AnalyticsData> {
   }
   try {
     const supabase = await createClient();
-    const [metricsRes, conversionsRes, contentRes] = await Promise.all([
+    const [accountRes, metricsRes, conversionsRes, contentRes] = await Promise.all([
+      supabase.schema("marketing").from("account_metrics_latest").select("reach,profile_visits"),
       supabase.schema("marketing").from("metrics_latest").select("reach,profile_visits,likes,comments,shares,saves"),
       supabase.schema("marketing").from("conversions").select("event_type,content_item_id"),
       supabase.schema("marketing").from("content_items").select("id,title"),
@@ -262,17 +301,24 @@ export async function getAnalytics(): Promise<AnalyticsData> {
     if (metricsRes.error) throw metricsRes.error;
     if (conversionsRes.error) throw conversionsRes.error;
     if (contentRes.error) throw contentRes.error;
+    if (accountRes.error) console.error("[marketing:getAnalytics:account]", accountRes.error);
 
     const rows = metricsRes.data ?? [];
+    const account = accountRes.data ?? [];
     const conversions = conversionsRes.data ?? [];
     const titles = new Map((contentRes.data ?? []).map((c) => [c.id, c.title]));
     const sum = (key: string) => rows.reduce((total, row) => total + Number((row as Record<string, unknown>)[key] ?? 0), 0);
+    const accountSum = (key: string) => account.reduce((total, row) => total + Number((row as Record<string, unknown>)[key] ?? 0), 0);
     const count = (type: string) => conversions.filter((c) => c.event_type === type).length;
 
+    // Account-level numbers win for the top of the funnel; engagement stays per-post.
+    const reach = account.length > 0 ? accountSum("reach") : sum("reach");
+    const profileVisits = account.length > 0 ? accountSum("profile_visits") : sum("profile_visits");
+
     const steps = [
-      { label: "Reach", value: sum("reach") },
+      { label: "Reach", value: reach },
       { label: "Engaged", value: sum("likes") + sum("comments") + sum("shares") + sum("saves") },
-      { label: "Profile", value: sum("profile_visits") },
+      { label: "Profile", value: profileVisits },
       { label: "App visit", value: count("APP_VISIT") },
       { label: "Signup", value: count("SIGNUP") },
       { label: "Booking", value: count("BOOKING") },
@@ -281,8 +327,8 @@ export async function getAnalytics(): Promise<AnalyticsData> {
 
     return {
       metrics: [
-        { label: "Reach", value: formatNumber(sum("reach")) },
-        { label: "Profile visits", value: formatNumber(sum("profile_visits")) },
+        { label: "Reach", value: formatNumber(reach) },
+        { label: "Profile visits", value: formatNumber(profileVisits) },
         { label: "App signups", value: formatNumber(count("SIGNUP")) },
         { label: "Memberships", value: formatNumber(count("MEMBERSHIP")) },
       ],

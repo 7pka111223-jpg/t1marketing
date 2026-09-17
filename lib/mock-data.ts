@@ -1,4 +1,5 @@
 import type {
+  AccountMetric,
   ApprovalItem,
   AssetItem,
   AudienceSignalRow,
@@ -141,6 +142,11 @@ export const renderQueue: RenderItem[] = [
   { id: "render-1", title: "Muscle-Up Transition", detail: "REEL · v1 · cut + subtitles + branded titles", status: "RENDERING" },
   { id: "render-2", title: "5 Pull-Up Mistakes", detail: "CAROUSEL · v1 · 8-slide carousel", status: "PENDING" },
   { id: "render-3", title: "Max Hang Challenge", detail: "REEL · v2 · member PR cut", status: "READY" },
+];
+
+export const accountMetrics: AccountMetric[] = [
+  { platform: "Instagram", capturedAt: "14 Sep", reach: 38100, profileVisits: 2140, followers: 4810, source: "MANUAL" },
+  { platform: "TikTok", capturedAt: "14 Sep", reach: 10100, profileVisits: 601, followers: 1290, source: "MANUAL" },
 ];
 
 export const readyPosts: ReadyPost[] = [

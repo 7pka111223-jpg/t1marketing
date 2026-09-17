@@ -56,6 +56,11 @@
   `POST /api/metrics/sync`, surfaced as Analytics → **Sync metrics**
 - Dashboard aggregates read `marketing.metrics_latest` (newest snapshot per publication), so repeated
   syncs never inflate reach or engagement
+- Account-level metrics (`marketing.account_metrics`) hold reach, profile visits and followers, which
+  exist only at the account level and can never be scraped. They are entered weekly from the Insights
+  screen via a form on Analytics, and `account_metrics_latest` keeps the newest snapshot per platform
+- Reach and profile visits prefer the account-level numbers and fall back to per-post sums; each
+  metric source degrades on its own if its migration is missing, instead of blanking the dashboard
 - Publishing is manual by default: approving a scheduled post moves it to `APPROVED`, the Publishing
   page hands over the approved copy with copy-to-clipboard and short-lived signed media links, and
   **Mark as posted** records the pasted post URL plus its parsed shortcode on the publication
@@ -87,10 +92,11 @@
 - `npm run typecheck` — clean.
 - `npm run build` — succeeds; all routes compile and fonts resolve.
 - Demo smoke test — all dashboard routes return 200.
-- `npm test` (alias for `node --test`) — 71/71 pass: post-URL parsing, brief normalization, campaign
-  slugify (unicode/Arabic, truncation), campaign lifecycle transitions, content pipeline progress,
-  render-status progress, conversion-ingest validation/PII, Instagram + TikTok insight parsing,
-  metrics row shaping, plus the existing status/guard/normalize suites.
+- `npm test` (alias for `node --test`) — 79/79 pass: account-metric validation, post-URL parsing,
+  brief normalization, campaign slugify (unicode/Arabic, truncation), campaign lifecycle transitions,
+  content pipeline progress, render-status progress, conversion-ingest validation/PII,
+  Instagram + TikTok insight parsing, metrics row shaping, plus the existing status/guard/normalize
+  suites.
 - Runtime smoke tests: `POST /api/conversions` (single, batch, PII/enum rejections);
   `POST /api/metrics/sync` (demo payload in demo mode, `401` unauthenticated in live mode);
   `POST /api/assets/[id]/ingest` (demo payload, `401` unauthenticated in live mode);
@@ -101,7 +107,9 @@
   their real render queue, search and pipeline progress; `/approvals` shows the script and CTA
   blocks and a decision is accepted; `/publishing` renders the copy set with 12 copy buttons and a
   mark-as-posted form, `POST /api/publications/[id]` rejects an unknown decision and a non-post URL,
-  and `GET /api/publications/[id]/asset` returns a file list.
+  and `GET /api/publications/[id]/asset` returns a file list; Analytics renders the account-numbers
+  table and entry form, and `POST /api/metrics/account` accepts a valid entry while rejecting an
+  unknown platform, a negative, a non-numeric and an empty entry.
 - Known Next.js streaming tradeoff: an unknown campaign id renders the not-found UI but returns
   `200`, because `app/(dashboard)/loading.tsx` commits the response before the page throws
   `notFound()`. A route that does not exist at all still returns `404`.

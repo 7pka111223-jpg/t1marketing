@@ -7,8 +7,8 @@ Target: `marketing.tripleonebars.com` on Vercel, backed by the existing TripleOn
 ## 1. Supabase prerequisites (once)
 
 1. Apply the migrations in order in the SQL editor of the existing project:
-   `supabase/migrations/001_marketing_os.sql`, then `002_attribution_views.sql`, then
-   `003_metrics_latest_view.sql`, then `004_campaign_slug_and_summary.sql`.
+   `001_marketing_os.sql`, `002_attribution_views.sql`, `003_metrics_latest_view.sql`,
+   `004_campaign_slug_and_summary.sql`, then `005_account_metrics.sql`.
    Order matters: 004 depends on the `metrics_latest` view created by 003.
 2. Expose the custom schema: **Project Settings → API → Exposed schemas** → add `marketing`
    (PostgREST queries fail without this).
@@ -81,6 +81,8 @@ human-approval skeleton.
     links, and **Mark as posted** with a real post URL moves it to `PUBLISHED`.
 11. Campaigns → open a campaign: the detail page shows attributed reach/signups/memberships and its
     linked content. A conversion posted with `utm_campaign=<campaign slug>` attaches to that campaign.
+12. Analytics → enter weekly account numbers: they appear in the **Account numbers** table and drive
+    reach and profile visits at the top of the funnel.
 
 ## Cost guardrails
 
