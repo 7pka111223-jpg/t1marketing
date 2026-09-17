@@ -1,13 +1,15 @@
 node_modules
 .next
-.env
-.env.local
 .vercel
-trigger/.trigger
 *.log
 .DS_Store
-
 *.tsbuildinfo
 
-# Local agent tooling state
+# Local agent tooling state (machine-specific)
 .commandcode/
+graphify-out/
+.trigger/
+
+# Secrets: never commit. .env.example is the documented template.
+.env*
+!.env.example
