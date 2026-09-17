@@ -6,7 +6,10 @@ Target: `marketing.tripleonebars.com` on Vercel, backed by the existing TripleOn
 
 ## 1. Supabase prerequisites (once)
 
-1. Apply `supabase/migrations/001_marketing_os.sql` in the SQL editor of the existing project.
+1. Apply the migrations in order in the SQL editor of the existing project:
+   `supabase/migrations/001_marketing_os.sql`, then `002_attribution_views.sql`, then
+   `003_metrics_latest_view.sql`, then `004_campaign_slug_and_summary.sql`.
+   Order matters: 004 depends on the `metrics_latest` view created by 003.
 2. Expose the custom schema: **Project Settings → API → Exposed schemas** → add `marketing`
    (PostgREST queries fail without this).
 3. Create a **private** Storage bucket named `marketing-assets`.
@@ -27,7 +30,8 @@ Set these in Vercel for **Production** and **Preview**. Never commit them.
 | `NEXT_PUBLIC_DEMO_MODE` | Public | `false` in production. Anything else (or a missing Supabase URL) forces demo mode. |
 | `NEXT_PUBLIC_SUPABASE_URL` | Public | Existing TripleOne project URL. |
 | `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Public | Publishable/anon key. |
-| `SUPABASE_SERVICE_ROLE_KEY` | Server only | Used by Trigger.dev tasks and publishing. Never expose to the browser. |
+| `SUPABASE_SERVICE_ROLE_KEY` | Server only | Used by Trigger.dev tasks, publishing, and conversion ingest. Never expose to the browser. |
+| `MARKETING_INGEST_SECRET` | Server only | Shared secret the main app sends to `POST /api/conversions`. Generate with `openssl rand -hex 32`. |
 | `NEXT_PUBLIC_APP_URL` | Public | `https://marketing.tripleonebars.com`. |
 | `TRIGGER_PROJECT_REF` / `TRIGGER_SECRET_KEY` | Server only | Only when Trigger.dev tasks are deployed. |
 | `OPENROUTER_API_KEY` / `AI_MODEL` / `AI_BASE_URL` | Server only | AI gateway. Model is env-selected, never hardcoded. |
@@ -55,8 +59,9 @@ API routes all deploy as-is.
 npm run trigger:deploy
 ```
 
-`weekly-content-planner` (Sun 08:00 Africa/Cairo) and `media-ingestion` run against Supabase using
-the service-role key. `content-workflow` is the durable human-approval skeleton.
+`weekly-content-planner` (Sun 08:00 Africa/Cairo), `metrics-sync` (daily 06:00 Africa/Cairo) and
+`media-ingestion` run against Supabase using the service-role key. `content-workflow` is the durable
+human-approval skeleton.
 
 ## 5. Post-deploy smoke test
 
@@ -68,6 +73,12 @@ the service-role key. `content-workflow` is the durable human-approval skeleton.
 6. Approvals → Approve writes a `marketing.approvals` row, a `marketing.content_versions` row, and
    advances the item's status.
 7. Settings → **Connections** reflects the real env state.
+8. `POST /api/conversions` with the ingest secret and a `SIGNUP` event returns `{ ok: true }`; a
+   request without the secret returns `401`.
+9. Analytics → **Sync metrics** captures one snapshot per published post and the funnel fills in
+   from `marketing.metrics_latest`.
+10. Campaigns → open a campaign: the detail page shows attributed reach/signups/memberships and its
+    linked content. A conversion posted with `utm_campaign=<campaign slug>` attaches to that campaign.
 
 ## Cost guardrails
 

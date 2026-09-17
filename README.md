@@ -11,8 +11,9 @@ The UI follows the supplied TripleOneBars design system: Triple Red `#E10600`, b
 - Responsive standalone dashboard shell (`marketing.tripleonebars.com` target)
 - Command Center
 - Ranked Research opportunities
+- Campaigns: objective, window and lifecycle (draft → active ⇄ paused → completed → archived), campaign-linked content, and a per-campaign detail page with attributed reach → memberships
 - Content Kanban
-- Creative Studio / asset-library shell
+- Creative Studio with a real render queue (from `marketing.creatives`) and a searchable asset library
 - Granular Approve / Edit / Reloop / Reject UI
 - Calendar
 - Audience signal page
@@ -42,6 +43,9 @@ npm run dev
 ```
 
 Leave `NEXT_PUBLIC_DEMO_MODE=true` for a local UI preview. Demo approval actions work locally and the API returns a demo success response.
+
+Run the unit suite with `npm test` (`node --test` over the `*.test.ts` files; it strips TypeScript
+inline, so it needs Node 22.6+, and is verified on Node 24).
 
 ## 2. Connect existing Supabase
 
@@ -111,6 +115,10 @@ AI_MODEL=<your chosen open-weight model>
 
 No model name is hardcoded so you can change models when price/quality shifts without code changes.
 
+The brief generator returns a structured brief — hook, script, caption, CTA, audience and
+performance hypothesis. The approval gate displays all of them, and approving records one
+`content_versions` row per component and writes the approved copy onto the content item.
+
 Use provider-side spend limits. Recommended MVP allocation: **$5–10/month max**.
 
 ## 6. Publishing
@@ -129,14 +137,46 @@ This avoids unsafe accidental public publishing while credentials are incomplete
 
 ## 7. Data integration with the existing app
 
-Do not expose unnecessary member details to the Marketing OS. Create read-only views containing only attribution fields needed for marketing, for example:
+Never expose member detail to the Marketing OS. Attribution works from opaque references and
+aggregates only. There are two supported paths.
 
-- signup date
-- first booking date
-- membership date
-- source / campaign / content ID
+### Push conversions (recommended)
 
-Capture UTMs/content IDs on visits and preserve them through signup/booking where possible:
+Set a shared secret and have the main app post conversion events server-to-server:
+
+```env
+MARKETING_INGEST_SECRET=<openssl rand -hex 32>
+```
+
+```bash
+curl -X POST https://marketing.tripleonebars.com/api/conversions \
+  -H "Authorization: Bearer $MARKETING_INGEST_SECRET" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "eventType": "SIGNUP",
+    "externalEventId": "app-signup-9f86d081",
+    "occurredAt": "2026-09-17T12:00:00Z",
+    "anonymousOrUserRef": "sha256:9f86d081",
+    "utmSource": "instagram",
+    "utmMedium": "organic_social",
+    "utmCampaign": "<campaign_slug>",
+    "utmContent": "<content_id>"
+  }'
+```
+
+Accepted `eventType` values: `APP_VISIT`, `SIGNUP`, `BOOKING`, `MEMBERSHIP`. A batch of up to 200
+events can be sent as `{ "events": [ ... ] }`.
+
+- `externalEventId` makes ingest idempotent — replays are counted as `duplicates` and skipped.
+- `anonymousOrUserRef` must be an opaque reference. Emails and phone numbers are rejected, so PII
+  cannot enter the workflow.
+- `utmContent` may be a content item UUID; a non-UUID value is kept as text for traceability.
+- `utmCampaign` should be a campaign's **slug** — the ingest resolves it to that campaign, so the
+  campaign detail page reports the attributed outcome. Unresolvable values are kept as raw text.
+- Unknown `contentItemId` / `campaignId` / `publicationId` values are dropped rather than failing
+  the batch.
+
+Capture UTMs on visits and preserve them through signup/booking where possible:
 
 ```text
 utm_source=instagram
@@ -144,6 +184,35 @@ utm_medium=organic_social
 utm_campaign=<campaign_slug>
 utm_content=<content_id>
 ```
+
+### Query the attribution views
+
+`supabase/migrations/002_attribution_views.sql` adds read-only views over `marketing.*` only. They
+run as the caller, so the existing `has_access()` RLS still applies, and they expose no member-level
+fields. Use them from the dashboard or BI instead of the app's own tables:
+
+- `marketing.attribution_conversions` — one row per conversion, joined to content, campaign, platform.
+- `marketing.attribution_content_performance` — per content: platform reach/engagement + attributed funnel counts.
+- `marketing.attribution_campaign_summary` — per campaign: awareness-to-membership counts.
+- `marketing.attribution_daily` — daily funnel counts for trend charts.
+
+If you prefer to read the app's own tables directly instead of pushing, the migration ends with a
+commented template — fill in the real table/column names and uncomment it. Keep each view limited to
+attribution fields (dates + source/campaign/content id).
+
+### Populate platform metrics
+
+`marketing.metrics` is an append-only snapshot series. Two ways to fill it:
+
+- **Scheduled** — `metrics-sync` runs daily at 06:00 Africa/Cairo once the Trigger.dev tasks are
+  deployed, and snapshots every published post.
+- **Manual** — Analytics → **Sync metrics** runs the same sync on demand via `POST /api/metrics/sync`
+  (allowlisted marketing users only).
+
+With Instagram/TikTok credentials present, each snapshot pulls live platform insights and normalizes
+them; without credentials it writes zero-filled rows so the funnel and timeline stay live and every
+sync is an auditable point in time. Dashboard aggregates read `marketing.metrics_latest` — the newest
+snapshot per publication — so repeated syncs never inflate reach or engagement.
 
 ## $20 monthly operating target
 
