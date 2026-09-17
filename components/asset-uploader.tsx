@@ -2,7 +2,7 @@
 import { ChangeEvent, useRef, useState } from "react";
 import { Upload } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
-import { isDemoMode } from "@/lib/config";
+import { isDemoMode, triggerConfig } from "@/lib/config";
 
 export function AssetUploader(){
   const inputRef=useRef<HTMLInputElement | null>(null);
@@ -25,8 +25,17 @@ export function AssetUploader(){
       const {error:uploadError}=await supabase.storage.from("marketing-assets").upload(path,file,{contentType:file.type,upsert:false});
       if(uploadError) throw uploadError;
       const type=file.type.startsWith("video/")?"VIDEO":file.type.startsWith("image/")?"PHOTO":file.type.startsWith("audio/")?"AUDIO":"GRAPHIC";
-      const {error:dbError}=await supabase.schema("marketing").from("assets").insert({storage_provider:"SUPABASE",storage_path:path,asset_type:type,mime_type:file.type,marketing_cleared:true,consent_status:"CLEARED",metadata:{original_name:file.name,size:file.size}});
+      const {data:assetRow,error:dbError}=await supabase.schema("marketing").from("assets").insert({storage_provider:"SUPABASE",storage_path:path,asset_type:type,mime_type:file.type,marketing_cleared:true,consent_status:"CLEARED",metadata:{original_name:file.name,size:file.size}}).select("id").single();
       if(dbError) throw dbError;
+      if(triggerConfig.configured && assetRow){
+        try{
+          const { tasks } = await import("@trigger.dev/sdk");
+          await tasks.trigger("media-ingestion", { assetId: assetRow.id });
+        }catch(ingestError){
+          console.error("[asset-uploader:media-ingestion]", ingestError);
+          setMessage(`${file.name} stored. Indexing will retry when the workflow runner is reachable.`);
+        }
+      }
       setMessage(`${file.name} added to the asset library.`);
     }catch(error){ setMessage(error instanceof Error?error.message:"Upload failed."); }
     finally{ e.target.value=""; }

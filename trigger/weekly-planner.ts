@@ -2,6 +2,7 @@ import { schedules, task } from "@trigger.dev/sdk";
 import { aiConfig } from "@/lib/config";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { generateOpportunities } from "@/lib/ai/generate";
+import { deriveAssetTags } from "@/lib/marketing/asset-tags";
 
 export const weeklyPlanner = schedules.task({
   id: "weekly-content-planner",
@@ -57,16 +58,14 @@ export const mediaIngestion = task({
     if (error || !asset) throw new Error(error?.message ?? "Asset not found");
 
     const metadata = (asset.metadata ?? {}) as Record<string, unknown>;
-    const name = String(metadata.original_name ?? asset.storage_path);
-    const tags = name
-      .toLowerCase()
-      .replace(/\.[a-z0-9]+$/, "")
-      .split(/[^a-z0-9]+/)
-      .filter((token) => token.length > 2);
+    const tags = deriveAssetTags(
+      metadata.original_name ? String(metadata.original_name) : null,
+      asset.storage_path,
+    );
 
     const { error: updateError } = await supabase
       .from("assets")
-      .update({ tags, visual_description: name, updated_at: new Date().toISOString() })
+      .update({ tags, visual_description: metadata.original_name ? String(metadata.original_name) : asset.storage_path, updated_at: new Date().toISOString() })
       .eq("id", payload.assetId);
     if (updateError) throw updateError;
 
