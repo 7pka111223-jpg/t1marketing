@@ -25,6 +25,7 @@ import type {
   AnalyticsData,
   ApprovalItem,
   AssetItem,
+  AssetLink,
   AudienceSignalRow,
   BoardCard,
   CalendarEntry,
@@ -405,17 +406,42 @@ export async function getReadyToPost(): Promise<ReadyPost[]> {
     const { data, error } = await supabase
       .schema("marketing")
       .from("publications")
-      .select("id,platform,status,scheduled_at,caption,content_items(title,approved_hook,approved_script,approved_caption,approved_cta)")
+      .select("id,platform,status,scheduled_at,caption,content_item_id,content_items(title,approved_hook,approved_script,approved_caption,approved_cta)")
       .eq("status", "APPROVED")
       .order("scheduled_at", { ascending: true })
       .limit(50);
     if (error) throw error;
-    return (data ?? []).map((row: any) => {
+
+    const rows = data ?? [];
+    const contentIds = [...new Set(rows.map((row: any) => row.content_item_id).filter((value): value is string => Boolean(value)))];
+    const links = new Map<string, AssetLink[]>();
+    if (contentIds.length > 0) {
+      // asset_usage is the link table between uploaded media and a content item; the posting kit
+      // needs it to hand over the right footage.
+      const { data: usage, error: usageError } = await supabase
+        .schema("marketing")
+        .from("asset_usage")
+        .select("content_item_id,assets(id,storage_path,metadata)")
+        .in("content_item_id", contentIds);
+      if (usageError) console.error("[marketing:getReadyToPost:assets]", usageError);
+      for (const row of usage ?? []) {
+        const asset = (row as any).assets;
+        if (!asset?.id) continue;
+        const metadata = (asset.metadata ?? {}) as Record<string, unknown>;
+        const name = String(metadata.original_name ?? String(asset.storage_path ?? "").split("/").pop() ?? "Asset");
+        const contentItemId = String((row as any).content_item_id);
+        links.set(contentItemId, [...(links.get(contentItemId) ?? []), { id: String(asset.id), name }]);
+      }
+    }
+
+    return rows.map((row: any) => {
       const item = (row.content_items ?? {}) as Record<string, unknown>;
       const at = row.scheduled_at ? new Date(row.scheduled_at) : null;
       const scheduled = at && !Number.isNaN(at.getTime()) ? `${dayLabel(at)} ${formatTime(at)}` : "Not scheduled";
+      const contentItemId = String(row.content_item_id ?? "");
       return {
         id: row.id,
+        contentItemId,
         title: String(item.title ?? "Untitled post"),
         platform: platformLabel(row.platform),
         scheduled,
@@ -423,6 +449,7 @@ export async function getReadyToPost(): Promise<ReadyPost[]> {
         script: String(item.approved_script ?? ""),
         caption: String(row.caption || item.approved_caption || ""),
         cta: String(item.approved_cta ?? ""),
+        assets: links.get(contentItemId) ?? [],
       };
     });
   } catch (error) {

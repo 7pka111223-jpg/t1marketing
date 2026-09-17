@@ -104,8 +104,11 @@ export type BoardCard = { id: string; title: string; type: string; status: strin
 
 export type RenderItem = { id: string; title: string; detail: string; status: string };
 
+export type AssetLink = { id: string; name: string };
+
 export type ReadyPost = {
   id: string;
+  contentItemId: string;
   title: string;
   platform: string;
   scheduled: string;
@@ -113,6 +116,7 @@ export type ReadyPost = {
   script: string;
   caption: string;
   cta: string;
+  assets: AssetLink[];
 };
 
 export type PostFile = { name: string; url: string };

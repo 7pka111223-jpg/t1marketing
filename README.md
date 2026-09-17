@@ -127,10 +127,10 @@ Publishing is **manual by default**. V1 requires final human approval, and the o
 hand — no platform credentials needed.
 
 1. A scheduled post is approved (`SCHEDULED → APPROVED`).
-2. It then appears on **Publishing**, which provides the approved copy (hook, script, caption, CTA)
-   to copy, short-lived signed download links for the approved media, and a **Mark as posted**
-   action. Paste the post URL afterwards and its shortcode is stored on the publication so per-post
-   metrics can find it later.
+2. It then appears on **Publishing**. Attach footage from the asset library, copy the approved text
+   (hook, script, caption, CTA), download the media via short-lived signed links, and use
+   **Mark as posted** — paste the post URL afterwards and its shortcode is stored on the publication
+   so per-post metrics can find it later.
 3. The platform-API delivery path still exists (`decision: "DELIVER"` behind `lib/publishing/`). It
    throws until Instagram/TikTok credentials are present, so it can never publish by accident.
 

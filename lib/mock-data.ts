@@ -152,6 +152,7 @@ export const accountMetrics: AccountMetric[] = [
 export const readyPosts: ReadyPost[] = [
   {
     id: "pub-1",
+    contentItemId: "content-1",
     title: "Muscle-Up Transition",
     platform: "Instagram Reel + TikTok",
     scheduled: "Mon 19:00",
@@ -159,9 +160,11 @@ export const readyPosts: ReadyPost[] = [
     script: "Beat 1 · Bar stays close to the chest.\nBeat 2 · Show the rep that fails at the transition.\nBeat 3 · Drill the turnover at the bar.\nBeat 4 · One clean rep, no cuts.",
     caption: "Most failed muscle-ups lose the rep at the transition. Keep the bar close, stay aggressive, and drill the turnover. احفظ الفيديو وجربه في التمرين الجاي.",
     cta: "Book a free assessment",
+    assets: [{ id: "asset-1", name: "Coach correcting muscle-up transition" }, { id: "asset-3", name: "Tuesday pull session" }],
   },
   {
     id: "pub-2",
+    contentItemId: "content-2",
     title: "5 Pull-Up Mistakes",
     platform: "Instagram Carousel",
     scheduled: "Wed 18:00",
@@ -169,9 +172,11 @@ export const readyPosts: ReadyPost[] = [
     script: "Slide 1 · Title.\nSlides 2–6 · One mistake each, with the fix underneath.\nSlide 7 · Save this for your next pull session.\nSlide 8 · How to start.",
     caption: "Fix the basics before chasing more reps. Save this checklist for your next pull session.",
     cta: "Save this carousel",
+    assets: [],
   },
   {
     id: "pub-3",
+    contentItemId: "content-3",
     title: "First Strict Muscle-Up",
     platform: "TikTok",
     scheduled: "Fri 20:00",
@@ -179,5 +184,6 @@ export const readyPosts: ReadyPost[] = [
     script: "Beat 1 · Training cut from the early weeks.\nBeat 2 · Chalk up.\nBeat 3 · The rep lands clean.\nBeat 4 · Coach reaction.",
     caption: "Member progress beats promises.",
     cta: "Start your first month",
+    assets: [{ id: "asset-2", name: "Member first strict muscle-up" }],
   },
 ];

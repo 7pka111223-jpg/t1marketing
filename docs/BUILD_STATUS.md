@@ -66,6 +66,9 @@
   **Mark as posted** records the pasted post URL plus its parsed shortcode on the publication
 - The platform-API delivery path is retained behind `decision: "DELIVER"` and stays inert without
   Instagram/TikTok credentials, so nothing can publish by accident
+- Uploaded media can be attached to a content item through `POST/DELETE /api/content/[id]/assets`,
+  which writes the `asset_usage` link table — this is what makes the posting kit's **Get media**
+  return files instead of an empty list
 - Mobile navigation reaches every destination (scrollable bottom bar)
 - Deployment guide in `docs/DEPLOYMENT.md`
 - **Connected to the live Supabase project** (`bpltbnlpkuebhxgbbxrk`), demo mode off:
@@ -107,7 +110,9 @@
   their real render queue, search and pipeline progress; `/approvals` shows the script and CTA
   blocks and a decision is accepted; `/publishing` renders the copy set with 12 copy buttons and a
   mark-as-posted form, `POST /api/publications/[id]` rejects an unknown decision and a non-post URL,
-  and `GET /api/publications/[id]/asset` returns a file list; Analytics renders the account-numbers
+  and `GET /api/publications/[id]/asset` returns a file list; `/publishing` also lists attached
+  media with an attach picker, and `POST`/`DELETE /api/content/[id]/assets` reject a non-UUID asset
+  id; Analytics renders the account-numbers
   table and entry form, and `POST /api/metrics/account` accepts a valid entry while rejecting an
   unknown platform, a negative, a non-numeric and an empty entry.
 - Known Next.js streaming tradeoff: an unknown campaign id renders the not-found UI but returns
