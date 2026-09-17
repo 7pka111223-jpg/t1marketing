@@ -1,3 +1,5 @@
+import type { CampaignStatus } from "@/lib/marketing/campaign-status";
+
 export type ContentStatus =
   | "IDEA"
   | "RESEARCHED"
@@ -31,7 +33,9 @@ export type ApprovalItem = {
   type: "Reel" | "Carousel" | "Story";
   stage: "Brief" | "Copy" | "Creative" | "Publish";
   hook: string;
+  script: string;
   caption: string;
+  cta: string;
   objective: string;
   audience: string;
   assets: number;
@@ -71,6 +75,33 @@ export type AnalyticsData = {
 
 export type AssetItem = { id: string; name: string; kind: string; meta: string; badge: string };
 
-export type BoardCard = { id: string; title: string; type: string };
+export type Campaign = {
+  id: string;
+  name: string;
+  objective: string;
+  status: CampaignStatus;
+  window: string;
+  contentCount: number;
+};
+
+export type CampaignOption = { id: string; name: string };
+
+export type CampaignContent = { id: string; title: string; type: string; status: string };
+
+export type CampaignDetail = {
+  id: string;
+  name: string;
+  slug: string;
+  objective: string;
+  status: CampaignStatus;
+  window: string;
+  metrics: DashboardMetric[];
+  conversions: ConvertDriver[];
+  content: CampaignContent[];
+};
+
+export type BoardCard = { id: string; title: string; type: string; status: string };
+
+export type RenderItem = { id: string; title: string; detail: string; status: string };
 
 export type ContentColumn = { title: string; items: BoardCard[] };

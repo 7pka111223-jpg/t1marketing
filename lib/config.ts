@@ -14,6 +14,18 @@ export const triggerConfig = {
   configured: Boolean(process.env.TRIGGER_SECRET_KEY && process.env.TRIGGER_PROJECT_REF),
 };
 
+export const ingestConfig = {
+  configured: Boolean(process.env.MARKETING_INGEST_SECRET && process.env.SUPABASE_SERVICE_ROLE_KEY),
+};
+
+// Live platform insights need a publishing-capable platform credential. Without one,
+// metrics sync still runs but writes zero-filled snapshots.
+export const insightsConfig = {
+  configured: Boolean(
+    (process.env.INSTAGRAM_ACCESS_TOKEN && process.env.INSTAGRAM_BUSINESS_ACCOUNT_ID) || process.env.TIKTOK_ACCESS_TOKEN,
+  ),
+};
+
 export type Connection = { name: string; role: string; state: string; ok: boolean };
 
 export function connectionStatus(): Connection[] {
@@ -26,5 +38,6 @@ export function connectionStatus(): Connection[] {
     { name: "Instagram", role: "Publishing", state: instagram ? "Configured" : "Disabled until API approval", ok: instagram },
     { name: "TikTok", role: "Publishing", state: tiktok ? "Configured" : "Disabled until API approval", ok: tiktok },
     { name: "AI Gateway", role: "Copy/research", state: aiConfig.configured ? "Configured" : "Not configured", ok: aiConfig.configured },
+    { name: "Conversion ingest", role: "Attribution", state: ingestConfig.configured ? "Configured" : "Not configured", ok: ingestConfig.configured },
   ];
 }

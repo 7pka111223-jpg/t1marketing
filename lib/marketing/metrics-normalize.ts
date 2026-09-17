@@ -14,3 +14,16 @@ export function normalizePlatformMetrics(raw: Record<string, unknown>): Platform
   }
   return result;
 }
+
+// One row per publication for marketing.metrics. Publications without live insights
+// (platform not configured, or no data yet) still produce a zero-filled snapshot so
+// the funnel stays live and each sync is an auditable point in time.
+export function buildMetricsRows(
+  publications: { id: string }[],
+  insights: Record<string, PlatformMetrics | null | undefined> = {},
+) {
+  return publications.map((publication) => ({
+    publication_id: publication.id,
+    ...normalizePlatformMetrics((insights[publication.id] ?? {}) as Record<string, unknown>),
+  }));
+}
