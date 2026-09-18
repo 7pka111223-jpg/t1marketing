@@ -61,6 +61,8 @@
   screen via a form on Analytics, and `account_metrics_latest` keeps the newest snapshot per platform
 - Reach and profile visits prefer the account-level numbers and fall back to per-post sums; each
   metric source degrades on its own if its migration is missing, instead of blanking the dashboard
+- Account numbers are partial-update safe: a blank field keeps its previous value rather than being
+  zeroed, so a week where only followers changed cannot wipe reach; an explicit 0 is still stored
 - Publishing is manual by default: approving a scheduled post moves it to `APPROVED`, the Publishing
   page hands over the approved copy with copy-to-clipboard and short-lived signed media links, and
   **Mark as posted** records the pasted post URL plus its parsed shortcode on the publication

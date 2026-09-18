@@ -47,7 +47,7 @@ export function AccountMetricsForm() {
 
   return <form className="card" onSubmit={submit}>
     <div className="card-head"><h2 className="display card-title">Enter weekly numbers</h2></div>
-    <div className="note" style={{ marginBottom: 16 }}>Reach and profile visits are private to your account — read them off the Insights screen in the Instagram or TikTok app. Leave anything you do not have blank; blanks are stored as zero.</div>
+    <div className="note" style={{ marginBottom: 16 }}>Reach and profile visits are private to your account — read them off the Insights screen in the Instagram or TikTok app. Leave a field blank to keep its previous value; only the fields you fill in are updated.</div>
     <div className="grid grid-3">
       <div className="form-row"><label>Platform</label><select name="platform" defaultValue="INSTAGRAM"><option value="INSTAGRAM">Instagram</option><option value="TIKTOK">TikTok</option></select></div>
       <div className="form-row"><label>Reach</label><input name="reach" type="number" min="0" placeholder="0"/></div>

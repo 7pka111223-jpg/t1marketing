@@ -221,7 +221,8 @@ Insights screen (or the official API) — they never appear on a public page, so
 scraped by anything. Analytics has an **Enter weekly numbers** form that writes to
 `marketing.account_metrics` (reach, profile visits, followers, and engagement if you have it);
 `account_metrics_latest` keeps the newest snapshot per platform, and reach/profile visits prefer
-those values over per-post sums.
+those values over per-post sums. Entry is partial-update safe: a blank field keeps its previous
+value, so updating only followers does not zero reach.
 
 ## $20 monthly operating target
 

@@ -2,30 +2,46 @@ import assert from "node:assert/strict";
 import { test } from "node:test";
 import { isMetricPlatform, normalizeAccountMetrics } from "./account-metrics.ts";
 
-test("accepts a normal weekly entry and fills the rest with zero", () => {
-  const result = normalizeAccountMetrics({ platform: "instagram", reach: 12000, profileVisits: 340, followers: 4810 });
+test("returns only the fields that were filled in", () => {
+  const result = normalizeAccountMetrics({ platform: "instagram", reach: 12000, profileVisits: 340 });
   assert.equal(result.ok, true);
   if (!result.ok) return;
   assert.equal(result.value.platform, "INSTAGRAM");
-  assert.equal(result.value.reach, 12000);
-  assert.equal(result.value.profile_visits, 340);
-  assert.equal(result.value.followers, 4810);
-  assert.equal(result.value.likes, 0);
-  assert.equal(result.value.saves, 0);
+  assert.deepEqual(result.value.metrics, { reach: 12000, profile_visits: 340 });
+});
+
+test("a blank field is omitted rather than turned into zero", () => {
+  const blank = normalizeAccountMetrics({ platform: "TIKTOK", reach: "", followers: 4810 });
+  assert.equal(blank.ok, true);
+  if (!blank.ok) return;
+  assert.equal("reach" in blank.value.metrics, false);
+  assert.equal(blank.value.metrics.followers, 4810);
+
+  const whitespace = normalizeAccountMetrics({ platform: "TIKTOK", reach: "   ", followers: 10 });
+  assert.equal(whitespace.ok, true);
+  if (!whitespace.ok) return;
+  assert.equal("reach" in whitespace.value.metrics, false);
+});
+
+test("an explicit zero is kept, because zero is a real number", () => {
+  const result = normalizeAccountMetrics({ platform: "TIKTOK", shares: 0 });
+  assert.equal(result.ok, true);
+  if (!result.ok) return;
+  assert.equal(result.value.metrics.shares, 0);
 });
 
 test("accepts snake_case field names too", () => {
   const result = normalizeAccountMetrics({ platform: "TIKTOK", profile_visits: 90 });
   assert.equal(result.ok, true);
   if (!result.ok) return;
-  assert.equal(result.value.profile_visits, 90);
+  assert.equal(result.value.metrics.profile_visits, 90);
 });
 
 test("rounds fractional input", () => {
   const result = normalizeAccountMetrics({ platform: "TIKTOK", reach: 1200.6 });
   assert.equal(result.ok, true);
   if (!result.ok) return;
-  assert.equal(result.value.reach, 1201);
+  assert.equal(result.value.metrics.reach, 1201);
 });
 
 test("rejects a missing or unknown platform", () => {
