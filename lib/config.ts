@@ -26,6 +26,13 @@ export const insightsConfig = {
   ),
 };
 
+// Video generation reuses the AI gateway key but is capped separately, because a single clip costs
+// more than a month of text generation. The cap is enforced in the API before anything is submitted.
+export const videoConfig = {
+  configured: aiConfig.configured,
+  monthlyCapUsd: Number(process.env.VIDEO_MONTHLY_CAP_USD ?? 10),
+};
+
 export type Connection = { name: string; role: string; state: string; ok: boolean };
 
 export function connectionStatus(): Connection[] {
@@ -39,5 +46,6 @@ export function connectionStatus(): Connection[] {
     { name: "TikTok", role: "Publishing", state: tiktok ? "Configured" : "Disabled until API approval", ok: tiktok },
     { name: "AI Gateway", role: "Copy/research", state: aiConfig.configured ? "Configured" : "Not configured", ok: aiConfig.configured },
     { name: "Conversion ingest", role: "Attribution", state: ingestConfig.configured ? "Configured" : "Not configured", ok: ingestConfig.configured },
+    { name: "Video generation", role: `Capped $${videoConfig.monthlyCapUsd}/mo`, state: videoConfig.configured ? "Ready" : "Needs OPENROUTER_API_KEY", ok: videoConfig.configured },
   ];
 }

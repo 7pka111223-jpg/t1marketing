@@ -130,4 +130,18 @@ export type AccountMetric = {
   source: string;
 };
 
+export type VideoGeneration = {
+  id: string;
+  status: string;
+  model: string;
+  prompt: string;
+  duration: number | null;
+  resolution: string | null;
+  costUsd: number;
+  createdAt: string;
+  error: string | null;
+};
+
+export type VideoBudget = { spentUsd: number; capUsd: number; remainingUsd: number };
+
 export type ContentColumn = { title: string; items: BoardCard[] };

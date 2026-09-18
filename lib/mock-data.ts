@@ -9,6 +9,7 @@ import type {
   Opportunity,
   ReadyPost,
   RenderItem,
+  VideoGeneration,
   WeekPlanItem,
 } from "@/lib/types";
 
@@ -147,6 +148,31 @@ export const renderQueue: RenderItem[] = [
 export const accountMetrics: AccountMetric[] = [
   { platform: "Instagram", capturedAt: "14 Sep", reach: 38100, profileVisits: 2140, followers: 4810, source: "MANUAL" },
   { platform: "TikTok", capturedAt: "14 Sep", reach: 10100, profileVisits: 601, followers: 1290, source: "MANUAL" },
+];
+
+export const videoJobs: VideoGeneration[] = [
+  {
+    id: "vid-1",
+    status: "COMPLETED",
+    model: "MiniMax H3",
+    prompt: "Branded motion graphics: the TripleOne wordmark assembling over chalk dust in a shaft of light. No people.",
+    duration: 5,
+    resolution: "2K",
+    costUsd: 0.65,
+    createdAt: "16 Sep",
+    error: null,
+  },
+  {
+    id: "vid-2",
+    status: "RUNNING",
+    model: "MiniMax H3",
+    prompt: "Slow dolly across the empty gym at sunrise, chalk dust drifting, barbell resting on the rack. No people.",
+    duration: 5,
+    resolution: "2K",
+    costUsd: 0.65,
+    createdAt: "17 Sep",
+    error: null,
+  },
 ];
 
 export const readyPosts: ReadyPost[] = [

@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
-import { isDemoMode } from "@/lib/config";
+import { isDemoMode, videoConfig } from "@/lib/config";
 import {
   accountMetrics,
   approvalItems,
@@ -15,8 +15,10 @@ import {
   opportunities,
   readyPosts,
   renderQueue,
+  videoJobs,
   weekPlan,
 } from "@/lib/mock-data";
+import { findVideoModel } from "@/lib/video/models";
 import { isCampaignStatus } from "@/lib/marketing/campaign-status";
 import { isRenderStatus } from "@/lib/marketing/render-status";
 import { slugify } from "@/lib/marketing/slug";
@@ -38,6 +40,8 @@ import type {
   Opportunity,
   ReadyPost,
   RenderItem,
+  VideoBudget,
+  VideoGeneration,
   WeekPlanItem,
 } from "@/lib/types";
 
@@ -396,6 +400,65 @@ export async function getRenderQueue(): Promise<RenderItem[]> {
   } catch (error) {
     console.error("[marketing:getRenderQueue]", error);
     return [];
+  }
+}
+
+export async function getVideoJobs(): Promise<VideoGeneration[]> {
+  if (demoMode()) return videoJobs;
+  try {
+    const supabase = await createClient();
+    const { data, error } = await supabase
+      .schema("marketing")
+      .from("jobs")
+      .select("id,status,cost_estimate_usd,metadata,created_at")
+      .eq("provider", "openrouter")
+      .eq("job_type", "VIDEO_GENERATION")
+      .order("created_at", { ascending: false })
+      .limit(10);
+    if (error) throw error;
+    return (data ?? []).map((row: any) => {
+      const meta = (row.metadata ?? {}) as Record<string, unknown>;
+      const modelId = String(meta.model ?? "");
+      return {
+        id: row.id,
+        status: String(row.status ?? "QUEUED"),
+        model: findVideoModel(modelId)?.label ?? (modelId || "Unknown model"),
+        prompt: String(meta.prompt ?? ""),
+        duration: typeof meta.duration === "number" ? meta.duration : null,
+        resolution: typeof meta.resolution === "string" ? meta.resolution : null,
+        costUsd: Number(row.cost_estimate_usd ?? 0),
+        createdAt: formatDay(row.created_at) ?? "—",
+        error: typeof meta.error === "string" ? meta.error : null,
+      };
+    });
+  } catch (error) {
+    console.error("[marketing:getVideoJobs]", error);
+    return [];
+  }
+}
+
+export async function getVideoBudget(): Promise<VideoBudget> {
+  const capUsd = videoConfig.monthlyCapUsd;
+  if (demoMode()) return { spentUsd: 0.65, capUsd, remainingUsd: Math.round((capUsd - 0.65) * 100) / 100 };
+  try {
+    const supabase = await createClient();
+    const monthStart = new Date();
+    monthStart.setUTCDate(1);
+    monthStart.setUTCHours(0, 0, 0, 0);
+    const { data, error } = await supabase
+      .schema("marketing")
+      .from("jobs")
+      .select("cost_estimate_usd")
+      .eq("provider", "openrouter")
+      .eq("job_type", "VIDEO_GENERATION")
+      .gte("created_at", monthStart.toISOString());
+    if (error) throw error;
+    const spentUsd = (data ?? []).reduce((total, row: any) => total + Number(row.cost_estimate_usd ?? 0), 0);
+    const rounded = Math.round(spentUsd * 100) / 100;
+    return { spentUsd: rounded, capUsd, remainingUsd: Math.round((capUsd - rounded) * 100) / 100 };
+  } catch (error) {
+    console.error("[marketing:getVideoBudget]", error);
+    return { spentUsd: 0, capUsd, remainingUsd: capUsd };
   }
 }
 

@@ -71,6 +71,15 @@
 - Uploaded media can be attached to a content item through `POST/DELETE /api/content/[id]/assets`,
   which writes the `asset_usage` link table — this is what makes the posting kit's **Get media**
   return files instead of an empty list
+- AI video generation through OpenRouter's asynchronous `/videos` API (MiniMax H3 family). The job is
+  recorded in `marketing.jobs` **before** submission, so a clip can never be generated untracked, and
+  a finished clip is stored in `marketing-assets` as an **uncleared** asset — a human must clear it
+  before it can be used
+- The video budget is enforced server-side: submissions are refused with `402` once the month's spend
+  would pass `VIDEO_MONTHLY_CAP_USD` (default $10), and the generator shows both the per-clip estimate
+  and the remaining budget
+- Generating people needs an explicit per-request confirmation, because `marketing.brand_rules` sets
+  `prefer_real_media`. Without it the prompt is constrained to environment and equipment
 - Mobile navigation reaches every destination (scrollable bottom bar)
 - Deployment guide in `docs/DEPLOYMENT.md`
 - **Connected to the live Supabase project** (`bpltbnlpkuebhxgbbxrk`), demo mode off:
@@ -97,11 +106,11 @@
 - `npm run typecheck` — clean.
 - `npm run build` — succeeds; all routes compile and fonts resolve.
 - Demo smoke test — all dashboard routes return 200.
-- `npm test` (alias for `node --test`) — 79/79 pass: account-metric validation, post-URL parsing,
-  brief normalization, campaign slugify (unicode/Arabic, truncation), campaign lifecycle transitions,
-  content pipeline progress, render-status progress, conversion-ingest validation/PII,
-  Instagram + TikTok insight parsing, metrics row shaping, plus the existing status/guard/normalize
-  suites.
+- `npm test` (alias for `node --test`) — 95/95 pass: video cost/cap and model-combination rules,
+  people-mention gating, account-metric validation, post-URL parsing, brief normalization, campaign
+  slugify (unicode/Arabic, truncation), campaign lifecycle transitions, content pipeline progress,
+  render-status progress, conversion-ingest validation/PII, Instagram + TikTok insight parsing,
+  metrics row shaping, plus the existing status/guard/normalize suites.
 - Runtime smoke tests: `POST /api/conversions` (single, batch, PII/enum rejections);
   `POST /api/metrics/sync` (demo payload in demo mode, `401` unauthenticated in live mode);
   `POST /api/assets/[id]/ingest` (demo payload, `401` unauthenticated in live mode);
@@ -116,7 +125,10 @@
   media with an attach picker, and `POST`/`DELETE /api/content/[id]/assets` reject a non-UUID asset
   id; Analytics renders the account-numbers
   table and entry form, and `POST /api/metrics/account` accepts a valid entry while rejecting an
-  unknown platform, a negative, a non-numeric and an empty entry.
+  unknown platform, a negative, a non-numeric and an empty entry; `/creative` renders the AI video
+  panel with the estimate and remaining budget, and `POST /api/video/generate` returns `400` for an
+  unconfirmed people prompt, an unsupported duration, resolution or aspect ratio, and a too-short
+  prompt, while a safe prompt prices at `$0.65` (H3) and `$0.25` (H3 Max 480p).
 - Known Next.js streaming tradeoff: an unknown campaign id renders the not-found UI but returns
   `200`, because `app/(dashboard)/loading.tsx` commits the response before the page throws
   `notFound()`. A route that does not exist at all still returns `404`.

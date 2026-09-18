@@ -14,6 +14,7 @@ The UI follows the supplied TripleOneBars design system: Triple Red `#E10600`, b
 - Campaigns: objective, window and lifecycle (draft → active ⇄ paused → completed → archived), campaign-linked content, and a per-campaign detail page with attributed reach → memberships
 - Content Kanban
 - Creative Studio with a real render queue (from `marketing.creatives`) and a searchable asset library
+- AI video generation (MiniMax H3 family via OpenRouter) with a hard monthly cap and a people-generation confirmation gate
 - Granular Approve / Edit / Reloop / Reject UI
 - Calendar
 - Audience signal page
@@ -120,6 +121,30 @@ performance hypothesis. The approval gate displays all of them, and approving re
 `content_versions` row per component and writes the approved copy onto the content item.
 
 Use provider-side spend limits. Recommended MVP allocation: **$5–10/month max**.
+
+### AI video (optional, hard-capped)
+
+The same gateway key enables video through OpenRouter's asynchronous `/videos` API. Two MiniMax H3
+family models are wired up: `minimax/hailuo-3` (2K, native audio, $0.13/clip-second) and
+`minimax/hailuo-3-max` (480p/768p, no audio, $0.05–0.08/s).
+
+```env
+VIDEO_MONTHLY_CAP_USD=10
+```
+
+- The cap is enforced **before** submission: a clip that would pass it is refused with `402`, and the
+  generator shows the per-clip estimate next to the remaining budget.
+- Each job is recorded in `marketing.jobs` *before* the provider is called, so a clip can never be
+  generated without a spend record.
+- A finished clip lands in `marketing-assets` as an **uncleared** asset — a human must clear it before
+  it can be used, which is the same gate that protects uploaded footage.
+- Generation is asynchronous (minutes), so the UI has a **Check status** action; a scheduled Trigger
+  task can drive it instead once Trigger.dev is deployed.
+
+**On generating people:** `marketing.brand_rules` sets `prefer_real_media`, so a prompt that looks
+like it would produce people is refused unless the requester ticks an explicit confirmation. Without
+it, the prompt is constrained to the environment and equipment. H3 is at its best on brand text,
+graphics and edits of real footage — which is also where your brand rules point.
 
 ## 6. Publishing
 

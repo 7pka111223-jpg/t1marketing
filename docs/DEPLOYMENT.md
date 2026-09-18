@@ -35,6 +35,7 @@ Set these in Vercel for **Production** and **Preview**. Never commit them.
 | `NEXT_PUBLIC_APP_URL` | Public | `https://marketing.tripleonebars.com`. |
 | `TRIGGER_PROJECT_REF` / `TRIGGER_SECRET_KEY` | Server only | Only when Trigger.dev tasks are deployed. |
 | `OPENROUTER_API_KEY` / `AI_MODEL` / `AI_BASE_URL` | Server only | AI gateway. Model is env-selected, never hardcoded. |
+| `VIDEO_MONTHLY_CAP_USD` | Server only | Hard cap for AI video generation. Defaults to `10`. A 5s 2K H3 clip is `$0.65`, so `$10` buys ~15 clips. |
 | `INSTAGRAM_ACCESS_TOKEN` / `INSTAGRAM_BUSINESS_ACCOUNT_ID` | Server only | Only after Meta app approval. |
 | `TIKTOK_ACCESS_TOKEN` / `TIKTOK_OPEN_ID` | Server only | Only after TikTok Content Posting approval. |
 
@@ -83,8 +84,15 @@ human-approval skeleton.
     linked content. A conversion posted with `utm_campaign=<campaign slug>` attaches to that campaign.
 12. Analytics → enter weekly account numbers: they appear in the **Account numbers** table and drive
     reach and profile visits at the top of the funnel.
+13. Creative → **AI video**: a safe prompt shows an estimate (`$0.65` for a 5s 2K H3 clip) and the
+    remaining budget; a prompt that mentions people is refused until the confirmation box is ticked.
 
 ## Cost guardrails
 
 Keep incremental cost at or below **$20/month**: Vercel free/hobby tier, Trigger.dev free–$10,
 AI gateway hard-capped at $5–10, reuse the existing Supabase project and Storage.
+
+**AI video is the expensive line item** and has its own enforced cap (default `$10/month`, roughly 15
+five-second 2K H3 clips). It shares the same $20 envelope, so raise `VIDEO_MONTHLY_CAP_USD` only by
+lowering something else. The cheap option is `minimax/hailuo-3-max` at 480p — $0.25 per 5-second clip
+rather than $0.65.

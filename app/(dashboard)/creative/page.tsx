@@ -2,11 +2,12 @@ import { PageHeader } from "@/components/page-header";
 import { AssetLibrary } from "@/components/asset-library";
 import { AssetUploader } from "@/components/asset-uploader";
 import { FormatCards } from "@/components/format-cards";
-import { getAssetLibrary, getRenderQueue } from "@/lib/data/marketing";
+import { VideoGenerator } from "@/components/video-generator";
+import { getAssetLibrary, getRenderQueue, getVideoBudget, getVideoJobs } from "@/lib/data/marketing";
 import { renderProgress } from "@/lib/marketing/render-status";
 
 export default async function CreativePage() {
-  const [assets, renders] = await Promise.all([getAssetLibrary(), getRenderQueue()]);
+  const [assets, renders, jobs, budget] = await Promise.all([getAssetLibrary(), getRenderQueue(), getVideoJobs(), getVideoBudget()]);
   return <>
     <PageHeader title="Creative Studio" copy="Existing TripleOne footage comes first. AI supports selection, copy, layout and graphics—not generic replacement athletes."/>
     <AssetUploader/>
@@ -26,5 +27,6 @@ export default async function CreativePage() {
             </div>)}
       </div>
     </section>
+    <VideoGenerator jobs={jobs} budget={budget}/>
   </>;
 }
