@@ -129,6 +129,10 @@
   panel with the estimate and remaining budget, and `POST /api/video/generate` returns `400` for an
   unconfirmed people prompt, an unsupported duration, resolution or aspect ratio, and a too-short
   prompt, while a safe prompt prices at `$0.65` (H3) and `$0.25` (H3 Max 480p).
+- Live OpenRouter video run against `minimax/hailuo-3` (5s, 2K, 9:16): submit → poll → `completed`
+  → download all succeeded, and the provider billed **$0.6500** against an estimate of **$0.65**, so
+  the per-clip figure shown in the UI is accurate to the cent. The route layer that records the job
+  and stores the file (which needs a signed-in session) was not part of this run.
 - Known Next.js streaming tradeoff: an unknown campaign id renders the not-found UI but returns
   `200`, because `app/(dashboard)/loading.tsx` commits the response before the page throws
   `notFound()`. A route that does not exist at all still returns `404`.
