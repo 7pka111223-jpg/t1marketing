@@ -6,7 +6,9 @@ import type {
   Campaign,
   ConvertDriver,
   DashboardMetric,
+  FanCamJob,
   Opportunity,
+  PortraitAsset,
   ReadyPost,
   RenderItem,
   VideoGeneration,
@@ -171,6 +173,40 @@ export const videoJobs: VideoGeneration[] = [
     resolution: "2K",
     costUsd: 0.65,
     createdAt: "17 Sep",
+    error: null,
+  },
+];
+
+export const portraitAssets: PortraitAsset[] = [
+  { id: "asset-p1", name: "Omar — member headshot (release signed)", uploadedAt: "12 Sep" },
+  { id: "asset-p2", name: "Salma — coach portrait (release signed)", uploadedAt: "14 Sep" },
+];
+
+export const fanCamJobs: FanCamJob[] = [
+  {
+    id: "fan-1",
+    status: "COMPLETED",
+    stage: "COMPLETED",
+    event: "Street workout national final, Cairo",
+    reaction: "On their feet as the last muscle-up lands",
+    caption: "Front row for the final rep. Next season that's you on the bar.",
+    frameRatio: "16:9",
+    duration: 5,
+    costUsd: 0.47,
+    createdAt: "18 Sep",
+    error: null,
+  },
+  {
+    id: "fan-2",
+    status: "RUNNING",
+    stage: "RENDERING",
+    event: "Championship fight night",
+    reaction: "Lower bowl, arms up as the round ends",
+    caption: "",
+    frameRatio: "9:16",
+    duration: 5,
+    costUsd: 0.47,
+    createdAt: "19 Sep",
     error: null,
   },
 ];

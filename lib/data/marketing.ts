@@ -12,13 +12,16 @@ import {
   convertDrivers,
   funnel,
   metrics,
+  fanCamJobs,
   opportunities,
+  portraitAssets,
   readyPosts,
   renderQueue,
   videoJobs,
   weekPlan,
 } from "@/lib/mock-data";
 import { findVideoModel } from "@/lib/video/models";
+import { VIDEO_BUDGET_JOB_TYPES } from "@/lib/video/cost";
 import { isCampaignStatus } from "@/lib/marketing/campaign-status";
 import { isRenderStatus } from "@/lib/marketing/render-status";
 import { slugify } from "@/lib/marketing/slug";
@@ -36,8 +39,10 @@ import type {
   ContentColumn,
   ConvertDriver,
   DashboardMetric,
+  FanCamJob,
   FunnelStep,
   Opportunity,
+  PortraitAsset,
   ReadyPost,
   RenderItem,
   VideoBudget,
@@ -445,12 +450,13 @@ export async function getVideoBudget(): Promise<VideoBudget> {
     const monthStart = new Date();
     monthStart.setUTCDate(1);
     monthStart.setUTCHours(0, 0, 0, 0);
+    // Both plain generation (OpenRouter) and fan cam (fal) draw on this one budget, so the query
+    // filters on job type rather than provider.
     const { data, error } = await supabase
       .schema("marketing")
       .from("jobs")
       .select("cost_estimate_usd")
-      .eq("provider", "openrouter")
-      .eq("job_type", "VIDEO_GENERATION")
+      .in("job_type", [...VIDEO_BUDGET_JOB_TYPES])
       .gte("created_at", monthStart.toISOString());
     if (error) throw error;
     const spentUsd = (data ?? []).reduce((total, row: any) => total + Number(row.cost_estimate_usd ?? 0), 0);
@@ -459,6 +465,71 @@ export async function getVideoBudget(): Promise<VideoBudget> {
   } catch (error) {
     console.error("[marketing:getVideoBudget]", error);
     return { spentUsd: 0, capUsd, remainingUsd: capUsd };
+  }
+}
+
+export async function getFanCamJobs(): Promise<FanCamJob[]> {
+  if (demoMode()) return fanCamJobs;
+  try {
+    const supabase = await createClient();
+    const { data, error } = await supabase
+      .schema("marketing")
+      .from("jobs")
+      .select("id,status,cost_estimate_usd,metadata,created_at")
+      .eq("job_type", "FAN_CAM")
+      .order("created_at", { ascending: false })
+      .limit(10);
+    if (error) throw error;
+    return (data ?? []).map((row: any) => {
+      const meta = (row.metadata ?? {}) as Record<string, unknown>;
+      return {
+        id: row.id,
+        status: String(row.status ?? "QUEUED"),
+        stage: String(meta.stage ?? "PLANNED"),
+        event: String(meta.event ?? ""),
+        reaction: String(meta.reaction ?? ""),
+        caption: String(meta.caption ?? ""),
+        frameRatio: String(meta.frame_ratio ?? "—"),
+        duration: typeof meta.duration === "number" ? meta.duration : null,
+        costUsd: Number(row.cost_estimate_usd ?? 0),
+        createdAt: formatDay(row.created_at) ?? "—",
+        error: typeof meta.error === "string" ? meta.error : null,
+      };
+    });
+  } catch (error) {
+    console.error("[marketing:getFanCamJobs]", error);
+    return [];
+  }
+}
+
+// Only consent-cleared photos can be the face in a fan cam, so the picker never offers anything
+// else. The API re-checks the same two columns — this list is convenience, not the control.
+export async function getPortraitAssets(): Promise<PortraitAsset[]> {
+  if (demoMode()) return portraitAssets;
+  try {
+    const supabase = await createClient();
+    const { data, error } = await supabase
+      .schema("marketing")
+      .from("assets")
+      .select("id,storage_path,metadata,created_at")
+      .eq("asset_type", "PHOTO")
+      .eq("marketing_cleared", true)
+      .eq("consent_status", "CLEARED")
+      .order("created_at", { ascending: false })
+      .limit(50);
+    if (error) throw error;
+    return (data ?? []).map((row: any) => {
+      const metadata = (row.metadata ?? {}) as Record<string, unknown>;
+      const fallbackName = String(row.storage_path ?? "").split("/").pop() ?? "Untitled photo";
+      return {
+        id: row.id,
+        name: String(metadata.original_name ?? fallbackName),
+        uploadedAt: formatDay(row.created_at) ?? "—",
+      };
+    });
+  } catch (error) {
+    console.error("[marketing:getPortraitAssets]", error);
+    return [];
   }
 }
 

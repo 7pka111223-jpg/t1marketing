@@ -33,6 +33,15 @@ export const videoConfig = {
   monthlyCapUsd: Number(process.env.VIDEO_MONTHLY_CAP_USD ?? 10),
 };
 
+// Fan cam chains an OpenRouter planner to two fal models, so it needs both keys. It draws on the
+// same monthly video budget as plain generation — one pot, so a fan cam cannot quietly double the
+// month's spend by billing to a different provider.
+export const fanCamConfig = {
+  configured: Boolean((process.env.FAL_KEY || process.env.FAL_API_KEY) && aiConfig.configured),
+  imageModel: process.env.FAL_IMAGE_MODEL || "fal-ai/nano-banana/edit",
+  videoModel: process.env.FAL_VIDEO_MODEL || "fal-ai/kling-video/v3/standard/image-to-video",
+};
+
 export type Connection = { name: string; role: string; state: string; ok: boolean };
 
 export function connectionStatus(): Connection[] {
@@ -47,5 +56,6 @@ export function connectionStatus(): Connection[] {
     { name: "AI Gateway", role: "Copy/research", state: aiConfig.configured ? "Configured" : "Not configured", ok: aiConfig.configured },
     { name: "Conversion ingest", role: "Attribution", state: ingestConfig.configured ? "Configured" : "Not configured", ok: ingestConfig.configured },
     { name: "Video generation", role: `Capped $${videoConfig.monthlyCapUsd}/mo`, state: videoConfig.configured ? "Ready" : "Needs OPENROUTER_API_KEY", ok: videoConfig.configured },
+    { name: "Fan cam (fal)", role: "Shares the video budget", state: fanCamConfig.configured ? "Ready" : "Needs FAL_KEY + OPENROUTER_API_KEY", ok: fanCamConfig.configured },
   ];
 }

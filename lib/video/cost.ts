@@ -13,6 +13,11 @@ export function estimateVideoCost(
   return round2(seconds + references);
 }
 
+// Every job type that draws on the monthly video budget. Plain generation bills to OpenRouter and
+// fan cam bills to fal, but they share one pot — filtering the budget query by provider would let a
+// fan cam spend a second, invisible $10. Anything added here must be added to nothing else.
+export const VIDEO_BUDGET_JOB_TYPES = ["VIDEO_GENERATION", "FAN_CAM"] as const;
+
 export type CapStatus = { allowed: boolean; remainingUsd: number; reason?: string };
 
 // The $10/month rule is enforced here rather than trusted to the operator: a submission that would

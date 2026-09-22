@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { isDemoMode, videoConfig } from "@/lib/config";
-import { estimateVideoCost, monthlyCapStatus, validateVideoRequest } from "@/lib/video/cost";
+import { estimateVideoCost, monthlyCapStatus, validateVideoRequest, VIDEO_BUDGET_JOB_TYPES } from "@/lib/video/cost";
 import { findVideoModel } from "@/lib/video/models";
 import { peopleGate, withPeopleConstraint } from "@/lib/video/people-guard";
 import { submitVideo } from "@/lib/video/client";
@@ -61,12 +61,13 @@ export async function POST(request: NextRequest) {
   const monthStart = new Date();
   monthStart.setUTCDate(1);
   monthStart.setUTCHours(0, 0, 0, 0);
+  // Fan cam bills to fal rather than OpenRouter but shares this budget, so the query filters on job
+  // type rather than provider — otherwise each provider would get its own silent $10.
   const { data: spendRows, error: spendError } = await supabase
     .schema("marketing")
     .from("jobs")
     .select("cost_estimate_usd")
-    .eq("provider", "openrouter")
-    .eq("job_type", "VIDEO_GENERATION")
+    .in("job_type", [...VIDEO_BUDGET_JOB_TYPES])
     .gte("created_at", monthStart.toISOString());
   if (spendError) return NextResponse.json({ error: spendError.message }, { status: 400 });
 

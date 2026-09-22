@@ -144,4 +144,22 @@ export type VideoGeneration = {
 
 export type VideoBudget = { spentUsd: number; capUsd: number; remainingUsd: number };
 
+/** A consent-cleared portrait that may be used as the face in a fan cam. */
+export type PortraitAsset = { id: string; name: string; uploadedAt: string };
+
+export type FanCamJob = {
+  id: string;
+  status: string;
+  /** PLANNED | EDITING | RENDERING | COMPLETED | FAILED */
+  stage: string;
+  event: string;
+  reaction: string;
+  caption: string;
+  frameRatio: string;
+  duration: number | null;
+  costUsd: number;
+  createdAt: string;
+  error: string | null;
+};
+
 export type ContentColumn = { title: string; items: BoardCard[] };

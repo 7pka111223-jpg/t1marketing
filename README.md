@@ -15,6 +15,7 @@ The UI follows the supplied TripleOneBars design system: Triple Red `#E10600`, b
 - Content Kanban
 - Creative Studio with a real render queue (from `marketing.creatives`) and a searchable asset library
 - AI video generation (MiniMax H3 family via OpenRouter) with a hard monthly cap and a people-generation confirmation gate
+- Fan cam: OpenRouter planner → fal image edit → fal image-to-video, gated on a consent-cleared portrait and a separate likeness confirmation, sharing the same monthly cap
 - Granular Approve / Edit / Reloop / Reject UI
 - Calendar
 - Audience signal page
@@ -145,6 +146,50 @@ VIDEO_MONTHLY_CAP_USD=10
 like it would produce people is refused unless the requester ticks an explicit confirmation. Without
 it, the prompt is constrained to the environment and equipment. H3 is at its best on brand text,
 graphics and edits of real footage — which is also where your brand rules point.
+
+### Fan cam (optional, shares the same cap)
+
+A three-stage chain modelled on fal's `fan-cam` workflow template: a cleared portrait of a real
+member becomes a spectator in a scene that never happened.
+
+```
+event + reaction + scene preset
+   → OpenRouter planner        writes the edit prompt, the motion prompt and the caption as JSON
+   → fal image edit            composites the member's face into one still frame
+   → fal image-to-video        animates that frame into a 5s or 10s clip
+   → marketing-assets          stored uncleared, with the caption attached
+```
+
+```env
+FAL_KEY=...
+FAL_IMAGE_MODEL=fal-ai/nano-banana/edit                          # $0.039 / frame
+FAL_VIDEO_MODEL=fal-ai/kling-video/v3/standard/image-to-video     # $0.084/s silent, $0.126/s with audio
+```
+
+A 5-second silent fan cam is **$0.47** — image edit, clip, and a flat $0.01 planner allowance.
+
+- **One budget, not two.** Fan cam bills to fal, plain generation bills to OpenRouter, and both draw
+  on `VIDEO_MONTHLY_CAP_USD`. The budget queries filter on job *type*, not provider, so a fan cam
+  cannot open a second silent $10.
+- **Consent is two separate permissions.** The source photo must already be `marketing_cleared` with
+  `consent_status = 'CLEARED'` — the API re-checks both columns server-side, so a forged asset id
+  cannot launder an uncleared face into a clip. On top of that, the operator must tick a second
+  confirmation that the person agreed to appear in a *generated scene they were never at*. Clearance
+  to use someone's photo is not clearance to fabricate them into a crowd. Both the job row and the
+  generated asset record who ticked it.
+- **The photo never leaves the bucket.** fal is handed a one-hour signed URL, not an upload.
+- **Likeness is guarded outside the planner.** An explicit "do not beautify, slim, lighten, age or
+  restyle" instruction is appended to whatever the planner wrote, so it cannot be forgotten.
+- **One step per request.** `POST /api/fancam/[jobId]` advances the job by exactly one stage
+  (`EDITING → RENDERING → COMPLETED`), so no HTTP request ever blocks on a model. Drive it from
+  **Check status** in the UI or from a scheduled Trigger task.
+- The composited still frame is archived as its own asset before being animated — fal's CDN links
+  expire, and the frame is usable creative on its own.
+
+**Endpoint ids and rates are from fal's model pages (Sep 2026) and both are env-overridable**,
+because fal renames endpoints between model generations. Two request fields are worth verifying
+against the model's playground before first live use: the video model's `start_image_url` (older
+Kling versions used `image_url`) and `generate_audio`, which is only sent when audio is switched on.
 
 ## 6. Publishing
 

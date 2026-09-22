@@ -3,11 +3,20 @@ import { AssetLibrary } from "@/components/asset-library";
 import { AssetUploader } from "@/components/asset-uploader";
 import { FormatCards } from "@/components/format-cards";
 import { VideoGenerator } from "@/components/video-generator";
-import { getAssetLibrary, getRenderQueue, getVideoBudget, getVideoJobs } from "@/lib/data/marketing";
+import { FanCamStudio } from "@/components/fan-cam-studio";
+import { fanCamConfig } from "@/lib/config";
+import { getAssetLibrary, getFanCamJobs, getPortraitAssets, getRenderQueue, getVideoBudget, getVideoJobs } from "@/lib/data/marketing";
 import { renderProgress } from "@/lib/marketing/render-status";
 
 export default async function CreativePage() {
-  const [assets, renders, jobs, budget] = await Promise.all([getAssetLibrary(), getRenderQueue(), getVideoJobs(), getVideoBudget()]);
+  const [assets, renders, jobs, budget, fanCams, portraits] = await Promise.all([
+    getAssetLibrary(),
+    getRenderQueue(),
+    getVideoJobs(),
+    getVideoBudget(),
+    getFanCamJobs(),
+    getPortraitAssets(),
+  ]);
   return <>
     <PageHeader title="Creative Studio" copy="Existing TripleOne footage comes first. AI supports selection, copy, layout and graphics—not generic replacement athletes."/>
     <AssetUploader/>
@@ -28,5 +37,13 @@ export default async function CreativePage() {
       </div>
     </section>
     <VideoGenerator jobs={jobs} budget={budget}/>
+    <FanCamStudio
+      jobs={fanCams}
+      portraits={portraits}
+      budget={budget}
+      imageModel={fanCamConfig.imageModel}
+      videoModel={fanCamConfig.videoModel}
+      configured={fanCamConfig.configured}
+    />
   </>;
 }
