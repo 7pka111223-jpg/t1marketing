@@ -13,3 +13,4 @@ graphify-out/
 # Secrets: never commit. .env.example is the documented template.
 .env*
 !.env.example
+fancam-out/

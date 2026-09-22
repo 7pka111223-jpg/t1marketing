@@ -186,6 +186,28 @@ A 5-second silent fan cam is **$0.47** — image edit, clip, and a flat $0.01 pl
 - The composited still frame is archived as its own asset before being animated — fal's CDN links
   expire, and the frame is usable creative on its own.
 
+#### Running it without the dashboard
+
+The dashboard path needs the whole stack up (Supabase, migration applied, a `marketing.members`
+row, the `marketing-assets` bucket, a cleared portrait uploaded). To exercise the chain before any
+of that exists — or to check a fal endpoint after changing a model id — run it from the command
+line. It imports the same planner, cost and fal modules the API routes use, so a green run here
+means the app's chain works:
+
+```bash
+# .env.local needs only OPENROUTER_API_KEY, AI_MODEL and FAL_KEY
+npm run fancam:smoke -- --dry-run                       # plans only, spends nothing
+npm run fancam:smoke -- --photo ./face.jpg              # full chain, ~$0.47
+npm run fancam:smoke -- --help
+```
+
+It writes `frame.jpg` and `clip.mp4` to `./fancam-out` and prints the planner's JSON, so you can
+see what the paid models were actually asked for. The photo is sent to fal as a data URI, so no
+public bucket is needed.
+
+This script deliberately bypasses the consent gates the API route enforces — it is a plumbing test,
+not a way to make clips. Use a photo of yourself.
+
 **Endpoint ids and rates are from fal's model pages (Sep 2026) and both are env-overridable**,
 because fal renames endpoints between model generations. Two request fields are worth verifying
 against the model's playground before first live use: the video model's `start_image_url` (older
