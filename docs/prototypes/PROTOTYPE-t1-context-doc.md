@@ -10,7 +10,7 @@
 | Group Sessions: CFC | Sat, Mon, Wed at 7:30 PM |
 | Group Sessions: First Settlement | Every day except Friday, 7–9 PM |
 | Ladies-Only Sessions: First Settlement | Sat, Mon, Wed, 6–7 PM |
-| Private Sessions | One-to-one with a coach, sold as a package of 8 sessions. Coaches: Bebo, Doina, Mesbah, Farah, Mokadem |
+| Private Sessions | One-to-one with a coach, sold as a package of 8 sessions. Coaches: Bebo, Donia, Mesbah, Farah, Mokadem |
 | Free Assessment | Booked on tripleonebars.com. Slots: Sat, Sun, Tue, Wed at 7, 8 or 9 PM. Both Session Types start here. |
 
 **Prices are for DMs only. Never put a price in a caption, Story or on-screen text.** (Private package: 8 sessions for 3,250 EGP.)
@@ -54,7 +54,7 @@ Rule: no two posts in the same week share a Lead Keyword.
 | Name | Instagram | Role | Level | Signature skills | On-camera consent | Consent date | Notes |
 |---|---|---|---|---|---|---|---|
 | Bebo | ___ | Coach | ___ | ___ | Yes | ___ | |
-| Doina | ___ | Coach | ___ | ___ | Yes | ___ | |
+| Donia | ___ | Coach | ___ | ___ | Yes | ___ | |
 | Mesbah | ___ | Coach | ___ | ___ | Yes | ___ | |
 | Farah | ___ | Coach | ___ | ___ | Yes | ___ | |
 | Mokadem | ___ | Coach | ___ | ___ | Yes | ___ | |

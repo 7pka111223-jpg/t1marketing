@@ -46,3 +46,11 @@ _Avoid_: Content week, Sat-Fri week
 **Swap-in**:
 A named replacement post, built from footage that is certain, for any planned post that depends on a moment that may not happen (a first rep, a PR).
 _Avoid_: Backup post, fallback
+
+**Sequel**:
+A new post in a series that already performed on the account, made with fresh footage (e.g. a second round of coach introductions, or a "then/now" pairing of an old clip with a new attempt).
+_Avoid_: Remake, rerun
+
+**Story Reshare**:
+A past feed post shared again to Stories, at least 8 weeks after it was published.
+_Avoid_: Repost, throwback post
