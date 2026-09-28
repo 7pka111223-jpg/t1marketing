@@ -1,9 +1,11 @@
-# T1 Weekly Plan: Sat 3 Oct to Fri 9 Oct 2026 — PROTOTYPE (throwaway draft for ticket #5)
+# Week of 5 Oct 2026 (Mon 5 to Sun 11 Oct) — PROTOTYPE (throwaway draft for ticket #5)
+
+> Lives as a new tab at the top of the single **T1 Weekly Plans** doc.
 
 > Written by the Friday routine on Fri 2 Oct, 14:00. **Nothing here is published until you approve it.** Performance numbers in section 1 are samples; the real routine fills them from Instagram and the Lead Sheet.
 
-**Theme of the week:** Pull-up (strategy §28, week 1)
-**Approve by:** Saturday night, so Sunday's filming list holds.
+**Skills this week:** pull-up (Mon), muscle-up (Fri), handstand (Sun). One skill per post, so each Lead Keyword matches its topic.
+**Approve by:** Saturday night. The team films Sat and Sun; the first post is Monday 7:30 PM.
 
 ## 1. Last week at a glance
 
@@ -22,8 +24,8 @@
 |---|---|---|---|---|---|---|
 | Mon 5 Oct | 7:30 PM | Reel | Learn the Skill | FIX YOUR PULL-UP: "Pulling harder won't fix this" | PULL-UP | Private Session |
 | Wed 7 Oct | 10:00 AM | Reel | Characters / Humor | COACH LOGIC #02: "Don't swing" | none | none |
-| Fri 9 Oct | 5:30 PM | Reel | Athlete Progress | FIRST CLEAN PULL-UP | START | Group Session |
-| Sun 4 Oct | 7:30 PM | Carousel | Learn the Skill | YOUR FIRST PULL-UP: 4-step ladder | LEVEL | Private Session |
+| Fri 9 Oct | 5:30 PM | Reel | Athlete Progress | FIRST MUSCLE-UP | MU | Group Session |
+| Sun 11 Oct | 7:30 PM | Carousel | Learn the Skill | YOUR FIRST HANDSTAND: 4-step ladder | HANDSTAND | Private Session |
 | Daily | see §5 | Stories | mixed | Live gym, polls, proof, one conversion beat | per Story | per Story |
 
 ## 3. Filming list
@@ -34,8 +36,8 @@ Film during normal sessions (§29). Vertical, 5–15 s clips. **Only people on t
 |---|---|---|---|---|
 | Sat 3 Oct, 7–9 PM | First Settlement | Coach Bebo + one Warrior athlete | Failed pull-up (chin short of bar); Bebo's cue "drive your elbows down"; 3 clean reps after | Mon Reel |
 | Sat 3 Oct, 7–9 PM | First Settlement | Coach Mesbah | Mesbah saying "Don't swing" ×3 to different athletes; athletes' faces after | Wed Reel |
-| Mon 5 Oct, 7:30 PM | CFC | Athlete working toward first strict pull-up (ask the coach who's closest) | Attempt; coach reaction; the moment it lands | Fri Reel (reshoot any day before Thu) |
-| Any session | Either | Any rostered coach | Dead hang → scap pull → negative → band pull-up, one clean rep each, same angle | Sun Carousel stills |
+| Sat 3 Oct onward, any session | Either | Athlete closest to a first muscle-up (ask the coaches) | Attempt; coach cue; the moment it lands; reaction | Fri Reel (keep trying through Thu) |
+| Sun 4 Oct, 7–9 PM | First Settlement | Any rostered coach | Wall hold → chest-to-wall → kick-up → freestanding hold, one clean clip each, same angle | Sun Carousel stills |
 
 **Don't film:** the Ladies-Only Session (6–7 PM) unless everyone in frame is on the roster with consent Yes.
 
@@ -81,35 +83,35 @@ Film during normal sessions (§29). Vertical, 5–15 s clips. **Only people on t
   > Tag الـ coach اللي بيقولها كل set.
 - **KPI:** Shares, tags.
 
-### Fri: FIRST CLEAN PULL-UP
+### Fri: FIRST MUSCLE-UP
 
 - **Objective:** Proof → Group Session Leads
 - **Length:** 15–20 s, structure §13: old attempt → coach cue → new attempt → real reaction
 - **Caption:**
-  > 0 → 1 strict pull-up.
+  > First muscle-up.
   > Sessions. Reps. Consistency.
   > Big work من [athlete, from roster].
   >
-  > Your first rep starts somewhere. DM "START" وتعالى جرّب الـ Group Sessions.
-- **Depends on:** the clip landing this week. **If it doesn't, swap in:** ONE BAR. 3 LEVELS: Pull-up (Skills, keyword LEVEL, moved from Sunday).
-- **KPI:** Shares, START DMs.
+  > عايز توصل للـ muscle-up بتاعك؟ DM "MU" وتعالى جرّب الـ Group Sessions.
+- **Depends on:** the rep landing this week. **Swap-in if it doesn't:** 3 WAYS TO MUSCLE-UP (Skills / Challenges, keyword MU, Group Session), filmed with any rostered coach.
+- **KPI:** Shares, MU DMs.
 
-### Sun: YOUR FIRST PULL-UP (carousel, 6 slides)
+### Sun: YOUR FIRST HANDSTAND (carousel, 6 slides)
 
 | Slide | Content |
 |---|---|
-| 1 | **CAN'T DO A PULL-UP YET?** **START HERE.** |
-| 2 | Dead hang, 30 s |
-| 3 | Scap pulls, 3×8 |
-| 4 | Negatives, 3×3 slow |
-| 5 | Band pull-ups, 3×5 |
-| 6 | **SAVE THIS. TEST IT THIS WEEK.** + "Not sure what level you are? DM LEVEL" |
+| 1 | **CAN'T HOLD A HANDSTAND YET?** **START HERE.** |
+| 2 | Wall plank hold, 30 s |
+| 3 | Chest-to-wall hold, 3×20 s |
+| 4 | Controlled kick-ups, 3×5 |
+| 5 | Freestanding attempts, 5 min |
+| 6 | **SAVE THIS. TEST IT THIS WEEK.** + "Want a coach on your line? DM HANDSTAND" |
 
-- **KPI:** Saves, LEVEL DMs.
+- **KPI:** Saves, HANDSTAND DMs.
 
 ## 5. Stories bank (pick one per slot each day)
 
-| Slot | Options |
+| Slot | Options (Mon to Sun) |
 |---|---|
 | 12:00 live gym | Today's warm-up; coach setting up the bar; arrivals |
 | 15:00 interactive | Poll: "Pull-up or handstand this week?"; quiz: "Which cue fixes this rep?" |
@@ -123,4 +125,5 @@ Film during normal sessions (§29). Vertical, 5–15 s clips. **Only people on t
 - [x] Every featured person is on the roster with consent Yes
 - [x] No two posts share a Lead Keyword this week
 - [x] Humor post carries no offer
+- [x] Every post that depends on a moment has a named swap-in
 - [x] Nothing scheduled or published; this is a draft

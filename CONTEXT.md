@@ -36,3 +36,13 @@ _Avoid_: Women's class, girls' session
 **Private Session**:
 One-to-one coaching with a named coach, sold as a multi-session package.
 _Avoid_: PT, personal training, 1:1
+
+## Planning
+
+**Plan Week**:
+The Monday-to-Sunday span one weekly plan covers, delivered the Friday before so the weekend is free for filming.
+_Avoid_: Content week, Sat-Fri week
+
+**Swap-in**:
+A named replacement post, built from footage that is certain, for any planned post that depends on a moment that may not happen (a first rep, a PR).
+_Avoid_: Backup post, fallback
