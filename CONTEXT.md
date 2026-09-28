@@ -5,7 +5,7 @@ Marketing for TripleOneBars, a calisthenics gym in Egypt: planning, producing an
 ## Leads
 
 **Lead**:
-A person who either DMs a Lead Keyword or books a trial or consult. One Lead per person per Session Type, credited to their first Lead Keyword; an Existing Member counts only for a Session Type they don't already have.
+A person who either DMs a Lead Keyword or books a Free Assessment. One Lead per person per Session Type, credited to their first Lead Keyword; an Existing Member counts only for a Session Type they don't already have.
 _Avoid_: Prospect, inquiry, conversion (a Conversion is the later paid outcome)
 
 **Lead Keyword**:
@@ -14,6 +14,10 @@ _Avoid_: DM code, trigger word
 
 **Comment Keyword**:
 A word a post asks people to comment for engagement (e.g. "Comment MU"). Commenting it never makes someone a Lead.
+
+**Free Assessment**:
+The free first session booked on tripleonebars.com; the single entry point for both Session Types, confirmed afterwards by the team.
+_Avoid_: Trial, consult, intro session
 
 **Existing Member**:
 A person already training at TripleOneBars in some Session Type. Flagged on any Lead they become.
