@@ -5,8 +5,18 @@ Marketing for TripleOneBars, a calisthenics gym in Egypt: planning, producing an
 ## Leads
 
 **Lead**:
-A person who either DMs a session keyword or books a trial or consult, recorded once and tagged with the Session Type they asked about.
+A person who either DMs a Lead Keyword or books a trial or consult. One Lead per person per Session Type, credited to their first Lead Keyword; an Existing Member counts only for a Session Type they don't already have.
 _Avoid_: Prospect, inquiry, conversion (a Conversion is the later paid outcome)
+
+**Lead Keyword**:
+The topic word a post asks people to DM (e.g. "PULL-UP", "MU", "START"). Always shown in English and logged in its canonical spelling, it identifies the post that produced the Lead.
+_Avoid_: DM code, trigger word
+
+**Comment Keyword**:
+A word a post asks people to comment for engagement (e.g. "Comment MU"). Commenting it never makes someone a Lead.
+
+**Existing Member**:
+A person already training at TripleOneBars in some Session Type. Flagged on any Lead they become.
 
 **Session Type**:
 Which paid offer a Lead is interested in: a Group Session or a Private Session. Every Lead carries exactly one.
