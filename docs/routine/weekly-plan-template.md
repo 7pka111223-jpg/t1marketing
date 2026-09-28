@@ -1,6 +1,6 @@
 # Weekly plan template
 
-The shape of every `Week of …` tab in T1 Weekly Plans. Section order and table columns are fixed; the worked example for the week of 5 Oct 2026 is `docs/prototypes/PROTOTYPE-weekly-plan.md`.
+The shape of every `Week of …` tab in T1 Weekly Plans. Section order and table columns are fixed; the content is new every week.
 
 ## Header (before section 1)
 
