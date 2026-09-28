@@ -63,6 +63,7 @@ Rules that shape the week:
 - **People:** name only people on the roster with consent Yes, spelled as the roster spells them. Anyone else is "an athlete" or "a coach". Ladies-Only Sessions appear only with everyone in frame on the roster.
 - **Prices** stay in DMs. Captions, Stories and on-screen text carry no price.
 - **Reuse:** at most one Sequel in the feed and one Story Reshare. Eligible sources are the top 10% of their format by shares + saves (likes + comments when insights are missing, labelled as a stand-in). Story Reshares only for posts 8+ weeks old. Skip any source already in a `Reuse log` from the last 12 weeks.
+- **Fresh concepts:** every concept, hook and script is written for this week. A concept that appeared in the last 12 weeks' tabs returns only as a declared Sequel. Files under `docs/prototypes/` are past drafts, not sources.
 - **Swap-ins:** every post that depends on a moment (first rep, PR) names a Swap-in built from certain footage.
 - **"This week"** in T1 Context overrides the defaults: plan around events, closures and who is away.
 - **Language:** natural Egyptian Arabic + English per strategy §21; hooks per §18, avoiding its "avoid" list.
