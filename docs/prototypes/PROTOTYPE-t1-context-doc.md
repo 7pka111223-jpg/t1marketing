@@ -6,10 +6,14 @@
 
 | Offer | Details |
 |---|---|
-| Group Sessions | Schedule: ___ (days/times per branch). Levels: Warrior / Spartan / Legend. Price range: ___ |
-| Private Sessions | One-to-one with a coach. Price range: ___. Which coaches take privates: ___ |
+| Branches | **CFC** and **First Settlement** |
+| Group Sessions: CFC | Sat, Mon, Wed at 7:30 PM |
+| Group Sessions: First Settlement | Every day except Friday, 7–9 PM |
+| Ladies-Only Sessions: First Settlement | Sat, Mon, Wed, 6–7 PM |
+| Private Sessions | One-to-one with a coach, sold as a package of 8 sessions. Coaches: Bebo, Doina, Mesbah, Farah, Mokadem |
 | Free Assessment | Booked on tripleonebars.com. Slots: Sat, Sun, Tue, Wed at 7, 8 or 9 PM. Both Session Types start here. |
-| Branches | ___ (name, area) |
+
+**Prices are for DMs only. Never put a price in a caption, Story or on-screen text.** (Private package: 8 sessions for 3,250 EGP.)
 
 ## 2. Lead Keywords (never change without updating the Lead Sheet dropdown)
 
@@ -49,11 +53,14 @@ Rule: no two posts in the same week share a Lead Keyword.
 
 | Name | Instagram | Role | Level | Signature skills | On-camera consent | Consent date | Notes |
 |---|---|---|---|---|---|---|---|
-| Karim (example) | @karim.t1 | Coach | Legend | muscle-up, front lever | Yes | 2026-09-01 | Face of COACH LOGIC |
-| Omar (example) | @omar.trains | Athlete | Spartan | strict pull-ups | Yes | 2026-09-15 | |
-| Salma (example) | — | Athlete | Warrior | handstand | No | — | Never feature |
+| Bebo | ___ | Coach | ___ | ___ | Yes | ___ | |
+| Doina | ___ | Coach | ___ | ___ | Yes | ___ | |
+| Mesbah | ___ | Coach | ___ | ___ | Yes | ___ | |
+| Farah | ___ | Coach | ___ | ___ | Yes | ___ | |
+| Mokadem | ___ | Coach | ___ | ___ | Yes | ___ | |
+| (athletes, one row each) | | Athlete | | | | | |
 
-Rule: the routine only writes scripts featuring people with consent = Yes.
+Rules: the routine only features people listed here with consent = Yes. Anyone not listed counts as No. Ladies-Only Sessions are never filmed unless every person in frame is listed with consent = Yes.
 
 ## 6. This week (update before Friday 2 PM)
 

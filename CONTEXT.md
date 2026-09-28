@@ -23,12 +23,16 @@ _Avoid_: Trial, consult, intro session
 A person already training at TripleOneBars in some Session Type. Flagged on any Lead they become.
 
 **Session Type**:
-Which paid offer a Lead is interested in: a Group Session or a Private Session. Every Lead carries exactly one.
+Which paid offer a Lead is interested in: a Group Session or a Private Session, or Undecided until they answer.
 
 **Group Session**:
 A coached class of several athletes on a shared schedule.
 _Avoid_: Class, group training
 
+**Ladies-Only Session**:
+A Group Session reserved for women, on its own schedule.
+_Avoid_: Women's class, girls' session
+
 **Private Session**:
-One-to-one coaching booked individually.
+One-to-one coaching with a named coach, sold as a multi-session package.
 _Avoid_: PT, personal training, 1:1
