@@ -56,7 +56,8 @@ Done when: every post from last week has a row, and every Lead row from last wee
 For each of the four feed slots (Mon 7:30 PM, Wed 10:00 AM, Fri 5:30 PM, Sun 7:30 PM), decide in this order, per strategy §38: objective, audience, pillar, format, hook, athlete/coach role, skill, visual payoff, CTA, language mode, primary KPI. Score competing ideas with the §40 weights and pick the highest.
 
 Rules that shape the week:
-- **Mix:** three Reels and one Carousel. Follow the strategy's pillar mix (§9); the Wednesday slot is Characters / Humor. <!-- LEARNING LOOP: rule pending owner approval, see ticket #10 -->
+- **Mix:** three Reels and one Carousel. The Wednesday slot is always Characters / Humor. Join TripleOne gets at most one post every two Plan Weeks.
+- **Learning loop:** count the past `Week of …` tabs. For the first four Plan Weeks, follow the strategy's pillar mix (§9). From the fifth on, rank pillars by **Leads per 1,000 reach** over the last four Plan Weeks: the top pillar gains one of this week's non-Wednesday slots, taken from the lowest. Say which pillar moved and why in section 1's "What it means".
 - **Skills rotate:** each post covers a different skill, and its Lead Keyword matches that skill. No two posts share a Lead Keyword.
 - **Offers:** follow the pillar → offer table in T1 Context. The caption ends with the pillar's engagement CTA, then one offer line with the Lead Keyword. Humor carries no offer. Join posts lead with the offer. Booking CTAs say "Book your free assessment, link in bio".
 - **People:** name only people on the roster with consent Yes, spelled as the roster spells them. Anyone else is "an athlete" or "a coach". Ladies-Only Sessions appear only with everyone in frame on the roster.
@@ -67,6 +68,8 @@ Rules that shape the week:
 - **Language:** natural Egyptian Arabic + English per strategy §21; hooks per §18, avoiding its "avoid" list.
 
 Then write the filming list (weekend sessions first), the developed pieces and the Stories bank, per the template.
+
+**Strategy check:** when this is a fourth Plan Week (4th, 8th, 12th … tab), add the template's Strategy check section comparing the last four Plan Weeks to the strategy's §6 baseline.
 
 Done when: all six template sections are complete for all four posts plus Stories, and every item in the template's section 6 checklist is verified true against the draft.
 

@@ -58,4 +58,8 @@ A checklist, each item ticked only after it was verified against the plan:
 - At most one Sequel and one Story Reshare; no source post reused within 12 weeks.
 - Nothing scheduled or published.
 
+## Strategy check (every 4th Plan Week only)
+
+Median reach, average watch time and 3-second skip rate of the last four Plan Weeks' Reels against the strategy's §6 baseline, plus Leads per 1,000 reach by pillar. One line on what the strategy file's time-sensitive sections (§47) should update. The routine suggests; the owner edits the strategy file.
+
 End the tab with one line: `Reuse log: <permalink(s) reused this week, or "none">`.
