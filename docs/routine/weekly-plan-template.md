@@ -57,7 +57,8 @@ Slots: 12:00 live gym · 15:00 interactive · 18:30 proof · 21:00 answer · 22:
 
 A checklist, each item ticked only after it was verified against the plan:
 - No price in any caption, Story or on-screen text.
-- Every named person is on the roster with consent Yes.
+- Every named person, and every recognisable face in the filming list, is on the roster with consent Yes.
+- Online athletes are mentioned only when T1 Context section 7 records one.
 - No two posts share a Lead Keyword; each Gym keyword matches its post's skill, each Online keyword is COACHING, ONLINE or PLAN.
 - The humor post carries no offer.
 - Every Online claim is on T1 Context section 7's available list; none is on its not-available list.
