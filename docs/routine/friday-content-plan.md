@@ -70,7 +70,7 @@ Done when: every post from last week has a row, and every Lead row from last wee
 For each slot, decide in this order: for a Gym post, per §38 (objective, audience, pillar, format, hook, athlete/coach role, skill, visual payoff, CTA, language mode, primary KPI), scoring competing ideas with the §40 weights; for an Online post, per online §38 (objective, audience, pillar, format, hook, coach role, athlete role, problem, coaching insight, proof, product element, CTA, primary KPI), checked against the online §40 checklist.
 
 Rules for both Lanes:
-- **People:** name only people on the roster with consent Yes, spelled as the roster spells them. Anyone else is "an athlete" or "a coach". Ladies-Only Sessions appear only with everyone in frame on the roster.
+- **People:** name only people on the roster with consent Yes, spelled as the roster spells them. Anyone else is "an athlete" or "a coach". A face that can be recognised on camera belongs to someone on the roster with consent Yes; film anyone else from behind, hands only or out of focus, and never plan a shot on "consent to be confirmed on the day". Ladies-Only Sessions appear only with everyone in frame on the roster.
 - **Prices** stay in DMs. Captions, Stories and on-screen text carry no price.
 - **No two posts share a Lead Keyword** in the week, across both Lanes.
 - **Reuse:** at most one Sequel in the feed and one Story Reshare. Eligible sources are the top 10% of their format by shares + saves (likes + comments when insights are missing, labelled as a stand-in). Story Reshares only for posts 8+ weeks old. Skip any source already in a `Reuse log` from the last 12 weeks.
@@ -87,9 +87,10 @@ Gym Lane rules:
 
 Online Lane rules:
 - **Concepts:** in Launch Weeks, the three Online posts take online §20's Monday, Thursday and Sunday titles for Week N, written fresh for real coaches and athletes. From Plan Week 5, follow the online §10 pillar mix; Direct Conversion at most once every four Plan Weeks. From Plan Week 9, rank Online pillars by **Online Leads per 1,000 reach** over the last four Plan Weeks and give the top pillar the lowest pillar's slot; say so in section 1.
-- **Lead Keywords:** only COACHING, ONLINE or PLAN, one per Online post, each different, using the pillar default in T1 Context section 7. The offer line is `DM <KEYWORD>`. "Comment …" CTAs are engagement only and never the offer line.
+- **Lead Keywords:** only COACHING, ONLINE or PLAN, one per Online post, each different, using the pillar default in T1 Context section 7. When two Online posts share a default, the earlier post keeps it and the later post takes the unused keyword. The offer line is `DM <KEYWORD>`. "Comment …" CTAs are engagement only and never the offer line.
 - **Claims:** describe or show only the features T1 Context section 7 lists as available. Never claim the features it lists as not available.
 - **Proof:** results and numbers come only from the Proof Records in T1 Context section 7. With no usable Proof Record, a Proof post becomes its Swap-in (a Coach Knows Why post). Never invent or round up a result.
+- **Online athletes exist only on the record:** a post or Story may mention or show an online athlete (a check-in, "an online athlete trained today") only when T1 Context section 7 lists at least one Proof Record or names an online athlete. Otherwise talk about the process, not about athletes in it.
 - **App screens:** plan screen recordings only when T1 Context section 7 says a demo account is ready. Otherwise the coach explains the process on camera, and the report flags the missing demo account.
 - **Coaches:** prefer the coaches T1 Context section 7 lists as online coaches. If none are listed, use any rostered coach and flag it in the report.
 - **Hook type:** tag every Online post with its online §44 hook family.
