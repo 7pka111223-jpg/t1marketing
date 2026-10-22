@@ -16,6 +16,16 @@ not cut-based edits. A persistent progress device (a numbered label, an n/20 cou
 they are, which is why a list video holds attention. Copy the structure, not just the effects: one base shot, one
 persistent counter, one effect per beat.
 
+**Layout of each video** (Apify `deapi/tiktok-video-scene-analyzer`, a small "fast" vision model; it confirms what is on
+screen and when, but does not describe how anything moves):
+- Taki: seated in a black office chair in a bright room, shelf and landscape print behind. The effects run 3–41 s in
+  2 s slots, each labelled, ending on a separate "Checklist" effect. Then a CTA sequence: effect list (41 s) → an
+  "AI Video Editor" app interface (43.5 s) → a `raw-video.mov` file (46.5 s) → phone mockup of himself (49 s) → a
+  TikTok follow notification (55.5 s).
+- Justyn: cap and camo fleece, dim room, dark wall. The effect list is a **permanent column on the right of the frame,
+  and he points at each item** while its effect plays: the list is choreographed with the presenter, not just overlaid.
+  Overlays include the magazine cover and an editor interface showing clips of him in other settings.
+
 **Evidence column.** *Seen*: confirmed by OCR text, colour or cut data at that timestamp. *Name*: inferred from the
 effect's spoken name only; the frames were not inspected by eye (Drive was full and the container blocks the CDN),
 so check these against the video before building.
