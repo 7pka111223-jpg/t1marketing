@@ -22,6 +22,19 @@ Sources, in order of authority:
 2. `docs/strategy/instagram-content-strategy.md`: Reel structure (§19), language (§21), visual direction (§30), covers (§31).
 3. `CONTEXT.md`: Lead Keywords, Proof Records, Lanes.
 
+## What the live feed shows (checked via the Instagram API, 2026-10-22)
+
+The last 30 posts on @tripleonebars (26 Reels, 4 carousels) were measured against this pack:
+- **The feed has no designed layer yet.** Covers are raw training footage. 7 of the 8 most recent covers carry no text.
+  Pixels near Triple Red make up 0.2% of the feed. The palette in this file is the design system's target, not
+  something the feed already does, so the first branded films will look different from the grid. That is intended.
+- **Footage colour is warm and mid-toned:** greys, browns and olives from concrete, wood, skin and daylight (`#443C36`, `#51534D`,
+  `#927A66`, `#9A9986`). Keep the designed palette quieter than this footage. Don't grade footage to match the brand red.
+- **On-screen text, when present, is English uppercase** ("LOWER BACK PAIN / NOT THE SITTING / HOW LONG YOU SIT").
+- **Captions are 100% English.** The strategy doc calls for Egyptian Arabic + English and lists "Do Arabic hooks
+  outperform English hooks?" as an open test. Default on-screen text to English; use Arabic when the brief is that test.
+- **The profile picture is about 90% black with a dark red mark.** That fits a black/red logo, but at 206 px it is not a usable logo file.
+
 Where the design system's voice examples talk about selling gear ("Shop the Rigs", "31mm steel"), ignore them. TripleOneBars is a
 calisthenics gym selling training. Copy follows the strategy doc.
 
