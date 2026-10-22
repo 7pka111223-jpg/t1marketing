@@ -115,6 +115,9 @@ Template fit (`om templates`):
 - **Good fits:** `kinetic-type` (key word slams in, colour band wipes: make the band T1 red), `talking-head` (coach and member Reels in 9:16), `blank`, `finance-chart` restyled for a Proof Record number, `object-3d` for the logo once a real file exists.
 - **Restyle or avoid:** `keynote-ui` (glow, blur and glass cards break the brand), `vox-collage` (paper and string), `storytime`, `kurzgesagt`, `math-3b1b`, `whiteboard`. Each brings its own world, and T1's world is the gym.
 
+Effect library: [references/effects-catalog.md](references/effects-catalog.md) lists 39 named effects from two reference
+videos, with how to build each one, whether it needs the athlete matted out, and whether it fits T1. Start from its build order.
+
 ## Reel format
 
 - Canvas `data-width="1080" data-height="1920"`, 30 fps. Make 16:9 or 4:5 cuts with `om fork <dir> <newdir> --size 1080x1350`.
