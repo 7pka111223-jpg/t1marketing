@@ -135,7 +135,7 @@ Template fit (`om templates`):
 
 ## Language and CTA
 
-- Egyptian Arabic + English, written from the idea, not translated (strategy §21). Gym terms stay English: pull-up, muscle-up, handstand, transition, set, reps, drill, clean reps.
+- On-screen text defaults to English, matching the live feed. When a film uses Egyptian Arabic (the strategy's Arabic-hook test), write it from the idea, not translated (strategy §21). Gym terms stay English: pull-up, muscle-up, handstand, transition, set, reps, drill, clean reps.
 - Voice: direct, confident, athletic, sentences under 15 words, imperative CTAs, numerals for numbers. Never "fitness journey", "unleash", "wellness".
 - **End card CTA uses a Lead Keyword**, always in English and in its canonical spelling: "DM PULL-UP", "DM MU", "DM START". Online Lane films use only COACHING, ONLINE or PLAN.
   A Comment Keyword ("Comment MU") is engagement, not a lead; never present it as the sign-up path.
