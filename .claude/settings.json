@@ -5,9 +5,16 @@
         "source": "github",
         "repo": "mattpocock/skills"
       }
+    },
+    "chatcut-inc": {
+      "source": {
+        "source": "github",
+        "repo": "ChatCut-Inc/agent-plugin"
+      }
     }
   },
   "enabledPlugins": {
-    "mattpocock-skills@mattpocock": true
+    "mattpocock-skills@mattpocock": true,
+    "chatcut@chatcut-inc": true
   }
 }
